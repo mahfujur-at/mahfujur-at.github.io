@@ -792,6 +792,27 @@ nav.nv a:hover:not(.on){background:rgba(127,140,180,.18)}
 .nv-pill{position:absolute;left:0;top:0;z-index:2;border-radius:99px;pointer-events:none;opacity:0;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 16px rgba(10,122,255,.35);will-change:transform,width}
 .nv-ov{position:absolute;inset:0;z-index:3;pointer-events:none;display:flex;overflow:hidden;border-radius:inherit;clip-path:inset(0 100% 0 0)}
 nav.nv .nv-ov a{color:#fff!important;background:none!important;box-shadow:none!important;transition:none!important;z-index:auto}
+.gsw{position:relative;padding-top:2px}
+#gs{--p:40%}
+#gs::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--accent) 0,var(--accent2) var(--p),rgba(127,140,180,.28) var(--p))}
+#gs::-moz-range-track{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--accent) 0,var(--accent2) var(--p),rgba(127,140,180,.28) var(--p))}
+.gv{position:absolute;bottom:calc(100% + 6px);transform:translateX(-50%) translateY(6px) scale(.8);min-width:46px;padding:5px 10px;border-radius:12px;text-align:center;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 14px -4px rgba(10,122,255,.55),inset 0 1px 0 rgba(255,255,255,.45);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.3,1.5,.5,1);white-space:nowrap}
+.gv::after{content:"";position:absolute;left:50%;bottom:-4px;width:9px;height:9px;background:var(--accent2);transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.gsw.drag .gv{z-index:3;opacity:1;top:calc(50% - 2px);bottom:auto;transform:translate(-50%,-50%) scale(1);min-width:0;width:30px;height:30px;padding:0;line-height:30px;border-radius:50%;font-size:13px;letter-spacing:0;color:var(--accent);background:transparent;box-shadow:none}
+.gsw.drag .gv::after{display:none}
+.lbl .gp{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){.gv{transition:none}}
+.glp{transition:background .35s,border-color .35s,box-shadow .35s,backdrop-filter .35s,opacity .3s,transform .3s}
+.glp>*{transition:opacity .3s}
+.glp.tune{background:transparent!important;border-color:transparent!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.glp.tune::before,.glp.tune::after{opacity:0!important}
+.glp.tune>:not(.gsw){opacity:0;pointer-events:none}
+.glp.tune .gsw{position:relative;z-index:1}
+.glp.tune .lbl{opacity:0;pointer-events:none}
+.glp.tune .gsw{box-shadow:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+.glp.tune .lbl{text-shadow:0 1px 6px var(--glass),0 0 12px var(--glass)}
+.glp.tune .lbl span{color:var(--text)}
+@media(prefers-reduced-motion:reduce){.glp,.glp>*{transition:none}}
 </style>
 </head>
 <body>
@@ -929,12 +950,19 @@ el.addEventListener("pointerleave",function(){el.style.transform=""})});
 <script>(function(){var w=document.querySelector(".fab.wa");function f(){w.classList.toggle("show",scrollY>480)}addEventListener("scroll",f,{passive:true});f()})();</script>
 <script>(function(){var L=document.querySelectorAll("nav a");function f(){if(scrollY<160){L.forEach(function(a,j){a.classList.toggle("on",j===0)})}}addEventListener("scroll",f,{passive:true});f()})();</script>
 <script>(function(){var b=document.getElementById("aus"),p=document.getElementById("auspanel");if(!b||!p)return;b.onclick=function(e){e.stopPropagation();var o=!p.classList.contains("open");p.classList.toggle("open",o);b.setAttribute("aria-expanded",o)};document.addEventListener("click",function(e){if(!p.contains(e.target)&&e.target!==b){p.classList.remove("open");b.setAttribute("aria-expanded","false")}})})();</script>
-<div class="glp" id="glp" role="dialog" aria-label="Appearance"><div class="seg" id="seg"><span class="seg-th" aria-hidden="true"></span><button type="button" data-t="light">☀️ Light</button><button type="button" data-t="dark">🌙 Dark</button></div><hr><b>Liquid Glass</b><p>Adjust how see-through the design looks.</p><input id="gs" type="range" min="0" max="100" value="40" aria-label="Liquid Glass intensity"><div class="lbl"><span>Clear</span><span>Tinted</span></div><hr><button type="button" class="lg-open" id="lgOpen"><span class="lg-ic" aria-hidden="true"><svg viewBox="0 0 24 24" class="lg-h"><g fill="#fff"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6 5c2 0 3.4 1 4.2 2.3h3.6C14.6 6 16 5 18 5c3.3 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></g></svg><i class="lg-sp lg-sp1"></i><i class="lg-sp lg-sp2"></i></span><span class="lg-tx"><b>Love Game</b><small>A fun little game</small></span><span class="lg-chev lg-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5l6.5 6.5-6.5 6.5"/></svg></span></button></div>
+<div class="glp" id="glp" role="dialog" aria-label="Appearance"><div class="seg" id="seg"><span class="seg-th" aria-hidden="true"></span><button type="button" data-t="light">☀️ Light</button><button type="button" data-t="dark">🌙 Dark</button></div><hr><b>Liquid Glass</b><p>Adjust how see-through the design looks.</p><div class="gsw"><input id="gs" type="range" min="0" max="100" value="40" aria-label="Liquid Glass intensity"><output class="gv" id="gv" aria-hidden="true">40%</output></div><div class="lbl"><span>Clear</span><span class="gp" id="gp">40%</span><span>Tinted</span></div><hr><button type="button" class="lg-open" id="lgOpen"><span class="lg-ic" aria-hidden="true"><svg viewBox="0 0 24 24" class="lg-h"><g fill="#fff"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6 5c2 0 3.4 1 4.2 2.3h3.6C14.6 6 16 5 18 5c3.3 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></g></svg><i class="lg-sp lg-sp1"></i><i class="lg-sp lg-sp2"></i></span><span class="lg-tx"><b>Love Game</b><small>A fun little game</small></span><span class="lg-chev lg-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5l6.5 6.5-6.5 6.5"/></svg></span></button></div>
 <script>(function(){
 var r=document.documentElement,b=document.getElementById("tg"),p=document.getElementById("glp"),s=document.getElementById("gs");
 function set(v){r.style.setProperty("--gi",v/100)}
 try{var v=localStorage.getItem("gi27");if(v!==null&&!isNaN(+v)){s.value=v;set(+v)}}catch(e){}
-s.addEventListener("input",function(){set(+s.value);try{localStorage.setItem("gi27",s.value)}catch(e){}});
+var gv=document.getElementById("gv"),gp=document.getElementById("gp"),gw=s.parentNode,gT=0;
+function show(){var v=+s.value;s.style.setProperty("--p",v+"%");if(gp)gp.textContent=v+"%";if(gv){gv.textContent=v;gv.style.left="calc("+v+"% + "+(15-v*.3)+"px)"}}
+function dr(v){gw.classList.toggle("drag",v);p.classList.toggle("tune",v)}
+function pop(){dr(true);clearTimeout(gT);gT=setTimeout(function(){dr(false)},1100)}
+show();
+s.addEventListener("input",function(){set(+s.value);show();pop();try{localStorage.setItem("gi27",s.value)}catch(e){}});
+["pointerdown","touchstart","mousedown"].forEach(function(n){s.addEventListener(n,function(){dr(true);clearTimeout(gT)},{passive:true})});
+["pointerup","pointercancel","touchend","mouseup","blur"].forEach(function(n){s.addEventListener(n,function(){clearTimeout(gT);gT=setTimeout(function(){dr(false)},450)},{passive:true})});
 function tog(o){p.classList.toggle("open",o);b.setAttribute("aria-expanded",o)}
 b.onclick=null;b.setAttribute("aria-label","Appearance and Liquid Glass settings");
 var sg=p.querySelectorAll(".seg button");function cur(){return r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}function mark(){var c=cur();sg.forEach(function(x){x.setAttribute("aria-pressed",x.dataset.t===c)})}
@@ -1066,7 +1094,7 @@ yes.addEventListener("click",function(){if(kq&&!sent){sent=true;try{fetch(NT+kq,
  st1.hidden=false;st2.hidden=true;if(to)fromI.value=to;if(from)toI.value=from;valid();upd();confetti();(function(){var r=card.getBoundingClientRect();burst(r.left+r.width/2,r.top+120,18)})()});
 var GAME="https://mahfujur-at.github.io/",NT="https://ntfy.sh/lg-";
 function rk(){var a="abcdefghijklmnopqrstuvwxyz0123456789",s="";try{var u=new Uint8Array(18);crypto.getRandomValues(u);for(var i=0;i<18;i++)s+=a[u[i]%36]}catch(e){for(var j=0;j<18;j++)s+=a[Math.floor(Math.random()*36)]}return s}
-var KEY=rk(),kq=(q.get("k")||"").toLowerCase(),ck=(q.get("check")||"").toLowerCase(),sent=false,chkP=$("lgChkPrev"),chkC=$("lgChkCopy"),chkO=$("lgChkOpen");
+var KEY=rk(),kq=(q.get("k")||"").toLowerCase(),ck=(q.get("check")||"").toLowerCase(),sent=false,chkP=$("lgChkPrev"),chkC=$("lgChkCopy"),chkO=$("lgChkOpen");if(chkO)chkO.addEventListener("click",function(e){e.preventDefault();showCheck(KEY,true)});
 if(!/^[a-z0-9]{10,40}$/.test(kq))kq="";if(!/^[a-z0-9]{10,40}$/.test(ck))ck="";
 function valid(){var f=clean(fromI.value),t=clean(toI.value),ok=!!(f&&t);creB.disabled=!ok;
  hint.textContent=ok?"Looks good! Tap the button \uD83D\uDC96":(!f&&!t?"Write both names to continue":(!f?"Please write your name":"Please write their name"));hint.classList.toggle("ok",ok);return ok}
@@ -1088,7 +1116,7 @@ if(chkC){var CKH=chkC.innerHTML;chkC.addEventListener("click",function(){var l=c
 cp.addEventListener("click",function(){upd();var done=function(){cp.classList.add("done");cp.innerHTML=CHK+"<span>Copied!</span>";buzz(15);clearTimeout(cpT);cpT=setTimeout(function(){cp.classList.remove("done");cp.innerHTML=CPY},1800)};
  function fb(){try{var t=document.createElement("textarea");t.value=link;t.setAttribute("readonly","");t.style.cssText="position:fixed;left:-9999px";document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();done()}catch(e){cp.textContent="Press and hold the link above";setTimeout(function(){cp.innerHTML=CPY},2200)}}
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(done,fb)}else fb()});
-function showCheck(key){var o=document.createElement("div");o.className="lg-modal on";o.setAttribute("aria-hidden","false");
+function showCheck(key,ip){var o=document.createElement("div");o.className="lg-modal on";o.setAttribute("aria-hidden","false");
  var HR='<path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6 5c2 0 3.4 1 4.2 2.3h3.6C14.6 6 16 5 18 5c3.3 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/>';
  o.innerHTML='<div class="lg-card ckc load"><div class="lg-fl" aria-hidden="true"><i>&#10084;</i><i>&#10084;</i><i>&#10084;</i><i>&#10084;</i><i>&#10084;</i><i>&#10084;</i></div>'+
  '<div class="ck-orb"><i class="ck-ring"></i><i class="ck-ring r2"></i><svg class="ck-heart" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="ckG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffa3ba"/><stop offset=".55" stop-color="#ff5c85"/><stop offset="1" stop-color="#e8174f"/></linearGradient></defs><g fill="url(#ckG)">'+HR+'</g></svg></div>'+
@@ -1104,9 +1132,9 @@ function showCheck(key){var o=document.createElement("div");o.className="lg-moda
   var rows=t.trim().split("\n").filter(Boolean).map(function(l){try{return JSON.parse(l)}catch(e){return null}}).filter(function(m){return m&&m.event==="message"});
   if(rows.length){var m=rows[rows.length-1];try{localStorage.setItem(SK,JSON.stringify([m.message,m.time]))}catch(e){}show(m.message,m.time);return}
   if(saved())return;
-  st("no");T.textContent="No answer yet ";T.insertAdjacentHTML("beforeend",'<svg class="ck-em" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#bf5af2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>');S.textContent="Not answered yet. This page checks again by itself.";tm=setTimeout(poll,15000)}).catch(function(){
+  st("no");T.textContent="No answer yet ";T.insertAdjacentHTML("beforeend",'<svg class="ck-em" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#bf5af2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>');S.textContent="Not answered yet. This page checks again by itself.";if(o.isConnected)tm=setTimeout(poll,15000)}).catch(function(){
   if(saved())return;st("err");T.textContent="Could not check";S.textContent="Please check your internet and tap Check again."})}
- R.addEventListener("click",poll);poll()}
+ R.addEventListener("click",poll);var X=o.querySelector(".ck-close");X.addEventListener("click",function(e){e.preventDefault();clearTimeout(tm);if(ip){o.remove();return}if(history.length>1){history.back();return}try{window.close()}catch(x){}setTimeout(function(){location.href=GAME},250)});poll()}
 setTitle();
 if(ck)showCheck(ck);else if(to)setTimeout(openG,rm?200:900);
 })();</script>
