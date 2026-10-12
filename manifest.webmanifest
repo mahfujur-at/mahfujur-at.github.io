@@ -1,0 +1,24 @@
+{
+ "name": "Mahfujur Rahman | IT Support & Technician",
+ "short_name": "Mahfujur",
+ "description": "Portfolio of Mahfujur Rahman, IT Support Technician.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#dfeaff",
+ "theme_color": "#dfeaff",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any maskable"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
