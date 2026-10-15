@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -513,6 +514,15 @@ button.lg-b.lg-no{box-shadow:0 4px 12px var(--shadow),inset 0 1px 0 rgba(255,255
 .lg-hw::after{animation-delay:1.2s}
 @keyframes lgrip{from{opacity:.8;scale:.7}to{opacity:0;scale:1.6}}
 .lg-bigheart{width:78px;height:78px;filter:drop-shadow(0 10px 16px rgba(255,46,99,.5));animation:lgbeat 1.3s ease-in-out infinite}
+.lg-bear{position:absolute;inset:0;width:78px;height:78px;margin:auto;pointer-events:none;animation:lgbeat 1.3s ease-in-out infinite}
+.lg-bear-head{transform-origin:12px 3.6px;transform-box:fill-box;animation:lgNuzzle 1.3s ease-in-out infinite}
+.lg-bear-eye{transform-origin:center;transform-box:fill-box;animation:lgBlink 3.4s ease-in-out infinite}
+.lg-bear-eye:nth-of-type(2){animation-delay:.08s}
+.lg-bear-arms,.lg-paw{transform-origin:12px 14px;transform-box:fill-box;animation:lgHug 1.3s ease-in-out infinite}
+@keyframes lgNuzzle{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg) translateY(.4px)}}
+@keyframes lgHug{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes lgBlink{0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(.12)}96%{transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){.lg-bear,.lg-bear-head,.lg-bear-eye,.lg-bear-arms,.lg-paw{animation:none}}
 .lg-card h1{font-size:32px;margin:6px 0 6px;letter-spacing:-.03em;background:linear-gradient(120deg,#ff2e63,#ff7a9c 55%,#ff2e63);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .lg-p{font-size:16px}
 .lg-area{height:176px;margin-top:20px}
@@ -855,6 +865,7 @@ nav.nv .nv-ov a{color:#fff!important;background:none!important;box-shadow:none!i
   <p style="margin-top:10px">From 2022 to present, I have been working as a Self-Employed Technician. I’ve fixed 300+ computers, installed Windows 10/11 &amp; MS Office 365, upgraded hardware, configured LAN/WiFi networks, and built websites with WordPress, Elementor &amp; WooCommerce. I provide fast remote support via TeamViewer &amp; AnyDesk and document every problem so it doesn’t happen again.</p>
   <p style="margin-top:10px">My core skills rated <b style="color:var(--text)">Ausgezeichnet</b>: Computer Hardware, Networking, Windows 11, MS Office 365, WordPress &amp; Elementor, and Hardware/Software Troubleshooting.</p>
   <p style="margin-top:10px">I am now seeking an entry-level IT Support / Helpdesk role in <b style="color:var(--text)">Austria</b>. I am hardworking, punctual, willing to relocate and available to start immediately.</p>
+  <p style="margin-top:10px">I enjoy fixing technical problems and making sure every client leaves satisfied.</p>
   <button type="button" class="status promise3" id="promiseBtn" aria-label="My promise: I don’t just fix your PC, I give you peace of mind."><b aria-hidden="true"></b><span>My promise: I don’t just fix your PC, I give you peace of mind.</span></button>
 </section>
 
@@ -1241,3 +1252,5 @@ setTimeout(function(){sync(false);re()},300);setTimeout(function(){sync(false);i
 })();</script>
 </body>
 </html>
+
+</body></html>
