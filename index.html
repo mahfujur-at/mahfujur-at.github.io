@@ -236,7 +236,7 @@ body{padding-bottom:40px}
 
 <style id="ios27">
 /* iOS 27 refined Liquid Glass: adjustable intensity (--gi 0 Clear .. 1 Tinted), better readability, sharper specular edges */
-:root{--gi:.65;--spec:.8;--muted:#4b5368;--glass:rgba(255,255,255,calc(.3 + var(--gi)*.5))}
+:root{--gi:.4;--spec:.8;--muted:#4b5368;--glass:rgba(255,255,255,calc(.3 + var(--gi)*.5))}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--spec:.3;--muted:#b4bcd0;--glass:rgba(40,46,66,calc(.32 + var(--gi)*.5))}}
 :root[data-theme="dark"]{--spec:.3;--muted:#b4bcd0;--glass:rgba(40,46,66,calc(.32 + var(--gi)*.5))}
 @media (prefers-reduced-transparency:reduce){:root{--gi:1}}
@@ -997,7 +997,7 @@ document.addEventListener("click",function(e){if(!p.contains(e.target))tog(false
 document.addEventListener("keydown",function(e){if(e.key==="Escape")tog(false)});
 if("IntersectionObserver" in window&&!matchMedia("(prefers-reduced-motion:reduce)").matches){
  r.classList.add("js");
- var io=new IntersectionObserver(function(en){en.forEach(function(x){x.target.classList.toggle("rv-in",x.isIntersecting)})},{threshold:.08,rootMargin:"0px 0px -4% 0px"});
+ var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add("rv-in");io.unobserve(x.target)}})},{threshold:.08,rootMargin:"0px 0px -4% 0px"});
  document.querySelectorAll("main>section:not(#home),main>.ribbon").forEach(function(e){io.observe(e)});
 }
 })();</script>
