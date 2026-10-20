@@ -37,7 +37,7 @@ section{margin-bottom:22px}
   border:1px solid var(--edge);border-radius:30px;box-shadow:0 10px 34px var(--shadow),inset 0 1px 0 rgba(255,255,255,.5);padding:24px;
   transition:background .4s ease,border-color .4s ease,box-shadow .4s ease}
 .scrollbar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:50;pointer-events:none}
-.cursor-glow{position:fixed;width:280px;height:280px;border-radius:50%;left:0;top:0;background:radial-gradient(circle,rgba(10,122,255,.14),transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s ease}
+.cursor-glow{position:fixed;width:280px;height:280px;border-radius:50%;left:0;top:0;background:radial-gradient(circle,rgba(10,122,255,.14),transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s ease;will-change:transform}
 @media(hover:hover) and (pointer:fine){.cursor-glow.on{opacity:1}}
 @media(prefers-reduced-motion:reduce){.cursor-glow{display:none}}
 .hero{text-align:center;padding:40px 24px 32px}
@@ -1248,9 +1248,11 @@ if(bar){var t=null;function upd(){var h=document.documentElement,p=(h.scrollTop|
 addEventListener("scroll",function(){if(t)return;t=requestAnimationFrame(function(){upd();t=null})},{passive:true});upd()}
 var glow=document.getElementById("cursorGlow");
 if(glow&&matchMedia("(hover:hover) and (pointer:fine)").matches&&!matchMedia("(prefers-reduced-motion:reduce)").matches){
- var shown=false;
- document.addEventListener("pointermove",function(e){if(e.pointerType!=="mouse")return;glow.style.left=e.clientX+"px";glow.style.top=e.clientY+"px";if(!shown){shown=true;glow.classList.add("on")}});
- document.addEventListener("pointerleave",function(){glow.classList.remove("on")});
+ var shown=false,gx=0,gy=0,graf=null;
+ function gpaint(){glow.style.transform="translate3d("+gx+"px,"+gy+"px,0) translate(-50%,-50%)";graf=null}
+ document.addEventListener("pointermove",function(e){if(e.pointerType!=="mouse")return;gx=e.clientX;gy=e.clientY;if(!shown){shown=true;glow.classList.add("on")}if(!graf)graf=requestAnimationFrame(gpaint)},{passive:true});
+ document.addEventListener("mouseleave",function(){glow.classList.remove("on")});
+ addEventListener("blur",function(){glow.classList.remove("on")});
 }
 })();</script>
 <script>(function(){
