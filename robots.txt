@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mahfujur-at.github.io/sitemap.xml
+Sitemap: https://mahfujur.at/sitemap.xml
