@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src https://ntfy.sh; form-action 'none'; manifest-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline' https://www.gstatic.com; connect-src https://ntfy.sh https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; form-action 'none'; manifest-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Mahfujur Rahman: IT Support Technician and WordPress &amp; Elementor builder from Bangladesh, open to IT Support/Helpdesk work in Austria.">
 <meta name="theme-color" content="#dfeaff">
@@ -1001,15 +1001,17 @@ el.addEventListener("pointerleave",function(){el.style.transform=""})});
 <script>(function(){
 var r=document.documentElement,b=document.getElementById("tg"),p=document.getElementById("glp"),s=document.getElementById("gs");
 function set(v){r.style.setProperty("--gi",v/100)}
+var giRaf=null,giPend=null;
+function schedSet(v){giPend=v;if(giRaf)return;giRaf=requestAnimationFrame(function(){set(giPend);giRaf=null})}
 try{var v=localStorage.getItem("gi27");if(v!==null&&!isNaN(+v)){s.value=v;set(+v)}}catch(e){}
 var gv=document.getElementById("gv"),gp=document.getElementById("gp"),gw=s.parentNode,gT=0;
 function show(){var v=+s.value;s.style.setProperty("--p",v+"%");if(gp)gp.textContent=v+"%";if(gv){gv.textContent=v;gv.style.left="calc("+v+"% + "+(15-v*.3)+"px)"}}
 function dr(v){gw.classList.toggle("drag",v);p.classList.toggle("tune",v)}
 function pop(){dr(true);clearTimeout(gT);gT=setTimeout(function(){dr(false)},1100)}
 show();
-s.addEventListener("input",function(){set(+s.value);show();pop();try{localStorage.setItem("gi27",s.value)}catch(e){}});
+s.addEventListener("input",function(){schedSet(+s.value);show();pop()});
 ["pointerdown","touchstart","mousedown"].forEach(function(n){s.addEventListener(n,function(){dr(true);clearTimeout(gT)},{passive:true})});
-["pointerup","pointercancel","touchend","mouseup","blur"].forEach(function(n){s.addEventListener(n,function(){clearTimeout(gT);gT=setTimeout(function(){dr(false)},450)},{passive:true})});
+["pointerup","pointercancel","touchend","mouseup","blur"].forEach(function(n){s.addEventListener(n,function(){clearTimeout(gT);gT=setTimeout(function(){dr(false)},450);try{localStorage.setItem("gi27",s.value)}catch(e){}},{passive:true})});
 function tog(o){p.classList.toggle("open",o);b.setAttribute("aria-expanded",o)}
 b.onclick=null;b.setAttribute("aria-label","Appearance and Liquid Glass settings");
 var sg=p.querySelectorAll(".seg button");function cur(){return r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}function mark(){var c=cur();sg.forEach(function(x){x.setAttribute("aria-pressed",x.dataset.t===c)})}
@@ -1134,7 +1136,7 @@ no.addEventListener("click",run);
 function confetti(){if(rm)return;for(var i=0;i<24;i++){(function(){var c=document.createElement("div");c.className="lg-conf";c.textContent=EM[Math.floor(Math.random()*EM.length)];
  c.style.left=Math.random()*100+"vw";c.style.fontSize=(14+Math.random()*16)+"px";c.style.animationDelay=Math.random()*1.2+"s";M.appendChild(c);
  setTimeout(function(){c.remove()},4600)})()}}
-yes.addEventListener("click",function(){if(kq&&!sent){sent=true;try{fetch(NT+kq,{method:"POST",body:(to||"Someone")+" said YES",keepalive:true}).catch(function(){})}catch(e){}}
+yes.addEventListener("click",function(){if(kq&&!sent){sent=true;try{fetch(NT+kq,{method:"POST",body:(to||"Someone")+" said YES",keepalive:true}).catch(function(){})}catch(e){}try{if(window.__fb)window.__fb.saveYes(kq,to,from)}catch(e){}}
  no.style.display="none";area.style.display="none";sub.style.display="none";fin.hidden=false;
  love.textContent=to?(to+", I Love You Too! \uD83D\uDC96"):"I Love You Too! \uD83D\uDC96";
  title.style.display="none";hw.classList.add("celebrate");words(knew,KT);buzz(35);
@@ -1174,13 +1176,18 @@ function showCheck(key,ip){var o=document.createElement("div");o.className="lg-m
  function st(c){C.className="lg-card ckc "+c}
  function show(msg,t){seen=true;st("yes");T.textContent=String(msg).slice(0,60)+" ";T.insertAdjacentHTML("beforeend",'<svg class="ck-em" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ff2e63" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6 5c2 0 3.4 1 4.2 2.3h3.6C14.6 6 16 5 18 5c3.3 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></svg>');S.textContent=t?("When: "+new Date(t*1000).toLocaleString()):"";if(!C.dataset.c){C.dataset.c=1;confetti()}}
  function saved(){var sv=null;try{sv=JSON.parse(localStorage.getItem(SK))}catch(e){}if(sv){show(sv[0],sv[1]);return true}return false}
- function poll(){st(seen?"yes load":"load");if(!seen){T.textContent="Checking...";S.textContent="Looking for an answer"}clearTimeout(tm);
-  fetch(NT+key+"/json?poll=1&since=all").then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+ function doNtfy(){fetch(NT+key+"/json?poll=1&since=all").then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
   var rows=t.trim().split("\n").filter(Boolean).map(function(l){try{return JSON.parse(l)}catch(e){return null}}).filter(function(m){return m&&m.event==="message"});
   if(rows.length){var m=rows[rows.length-1];try{localStorage.setItem(SK,JSON.stringify([m.message,m.time]))}catch(e){}show(m.message,m.time);return}
   if(saved())return;
   st("no");T.textContent="No answer yet ";T.insertAdjacentHTML("beforeend",'<svg class="ck-em" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#bf5af2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>');S.textContent="Not answered yet. This page checks again by itself.";if(o.isConnected)tm=setTimeout(poll,15000)}).catch(function(){
   if(saved())return;st("err");T.textContent="Could not check";S.textContent="Please check your internet and tap Check again."})}
+ function poll(){st(seen?"yes load":"load");if(!seen){T.textContent="Checking...";S.textContent="Looking for an answer"}clearTimeout(tm);
+  if(window.__fb){window.__fb.getAnswer(key).then(function(d){
+   if(d&&d.answer==="yes"){var msg=(d.to||"Someone")+" said YES";var ts=d.time&&d.time.seconds?d.time.seconds:Math.floor(Date.now()/1000);
+    try{localStorage.setItem(SK,JSON.stringify([msg,ts]))}catch(e){}show(msg,ts);return}
+   doNtfy()}).catch(doNtfy)}
+  else doNtfy()}
  R.addEventListener("click",poll);var X=o.querySelector(".ck-close");X.addEventListener("click",function(e){e.preventDefault();clearTimeout(tm);if(ip){o.remove();return}if(history.length>1){history.back();return}try{window.close()}catch(x){}setTimeout(function(){location.href=GAME},250)});poll()}
 setTitle();
 if(ck)showCheck(ck);else if(to)setTimeout(openG,rm?200:900);
@@ -1284,6 +1291,55 @@ var sT=0;window.addEventListener("scroll",function(){if(!lock)return;clearTimeou
 function re(){var a=cur||active();if(a){fit();setNow(geo(a))}}
 window.addEventListener("resize",re);window.addEventListener("load",re);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(re);
 setTimeout(function(){sync(false);re()},300);setTimeout(function(){sync(false);if(!cur)go(L[0],false)},1200);
+})();</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+var firebaseConfig={apiKey:"AIzaSyCZrNOohHeXtXBkHoqfDqxBrRwqlB8YcQg",authDomain:"mahfujur-at.firebaseapp.com",projectId:"mahfujur-at",storageBucket:"mahfujur-at.firebasestorage.app",messagingSenderId:"259793717492",appId:"1:259793717492:web:0093c600230107fdcbf6a1"};
+var fbApp=initializeApp(firebaseConfig),db=getFirestore(fbApp),auth=getAuth(fbApp);
+window.__fb={
+ saveYes:function(key,to,from){if(!key)return Promise.resolve();return setDoc(doc(db,"loveGames",key),{to:to||"",from:from||"",answer:"yes",time:serverTimestamp()}).catch(function(){})},
+ getAnswer:function(key){return getDoc(doc(db,"loveGames",key)).then(function(s){return s.exists()?s.data():null})},
+ login:function(email,pass){return signInWithEmailAndPassword(auth,email,pass)},
+ logout:function(){return signOut(auth)},
+ onAuth:function(cb){onAuthStateChanged(auth,cb)},
+ listAll:function(){var qy=query(collection(db,"loveGames"),orderBy("time","desc"));return getDocs(qy).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});return out})}
+};
+window.dispatchEvent(new Event("fbready"));
+</script>
+<script>(function(){
+if(new URLSearchParams(location.search).get("knight")!=="1")return;
+var ov=document.createElement("div");
+ov.style.cssText="position:fixed;inset:0;z-index:999;background:#0b0f1a;color:#eef2ff;font-family:-apple-system,system-ui,sans-serif;overflow:auto;padding:24px 16px;display:flex;align-items:center;justify-content:center;text-align:center";
+ov.innerHTML='<p>Loading…</p>';
+document.body.appendChild(ov);
+var timedOut=false,loadT=setTimeout(function(){timedOut=true;ov.innerHTML='<p>Could not connect. Check your internet and reload the page.</p>'},8000);
+function ready(fn){if(window.__fb){clearTimeout(loadT);fn()}else if(!timedOut)window.addEventListener("fbready",function(){clearTimeout(loadT);fn()},{once:true})}
+ready(function(){
+ ov.style.display="block";ov.style.textAlign="left";
+ ov.innerHTML='<div style="max-width:720px;margin:0 auto">'+
+  '<h1 style="font-size:22px;margin:0 0 16px">Love Game — History</h1>'+
+  '<div id="admLogin"><p style="opacity:.8">Sign in to view history.</p>'+
+  '<input id="admE" type="email" placeholder="Email" autocomplete="username" style="display:block;width:100%;margin:8px 0;padding:10px;border-radius:8px;border:1px solid #333;background:#161b2c;color:#fff">'+
+  '<input id="admP" type="password" placeholder="Password" autocomplete="current-password" style="display:block;width:100%;margin:8px 0;padding:10px;border-radius:8px;border:1px solid #333;background:#161b2c;color:#fff">'+
+  '<button id="admGo" style="padding:10px 18px;border-radius:8px;border:0;background:#0A7AFF;color:#fff;font-weight:600;cursor:pointer">Sign in</button>'+
+  '<p id="admErr" style="color:#ff6b81"></p></div>'+
+  '<div id="admList" hidden><button id="admOut" style="margin-bottom:14px;padding:8px 14px;border-radius:8px;border:0;background:#333;color:#fff;cursor:pointer">Sign out</button><div id="admRows"></div></div>'+
+ '</div>';
+ var eI=ov.querySelector("#admE"),pI=ov.querySelector("#admP"),go=ov.querySelector("#admGo"),err=ov.querySelector("#admErr"),login=ov.querySelector("#admLogin"),list=ov.querySelector("#admList"),rows=ov.querySelector("#admRows"),out=ov.querySelector("#admOut");
+ go.addEventListener("click",function(){err.textContent="";window.__fb.login(eI.value,pI.value).catch(function(e){err.textContent="Login failed: "+(e&&e.message||"check email/password")})});
+ out.addEventListener("click",function(){window.__fb.logout()});
+ window.__fb.onAuth(function(u){
+  if(u){login.hidden=true;list.hidden=false;window.__fb.listAll().then(function(items){
+   if(!items.length){rows.innerHTML='<p style="opacity:.7">No games yet.</p>';return}
+   rows.innerHTML=items.map(function(it){var t=it.time&&it.time.seconds?new Date(it.time.seconds*1000).toLocaleString():"";
+    return '<div style="padding:12px;border:1px solid #2a3040;border-radius:10px;margin-bottom:8px"><b>'+(it.from||"Someone")+'</b> → <b>'+(it.to||"Someone")+'</b> : <span style="color:#4ade80">YES ❤️</span><br><small style="opacity:.6">'+t+'</small></div>';
+   }).join("")
+  }).catch(function(){rows.innerHTML='<p style="color:#ff6b81">Could not load history.</p>'})}
+  else{login.hidden=false;list.hidden=true}
+ })
+})
 })();</script>
 </body>
 </html>
