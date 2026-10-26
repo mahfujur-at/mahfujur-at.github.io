@@ -297,7 +297,7 @@ nav a svg{width:17px;height:17px;flex:none}
 .glass h2::before{display:none}
 .app b{position:relative;border-radius:23%;overflow:hidden;box-shadow:0 10px 22px var(--shadow),inset 0 1px 0 rgba(255,255,255,.65),inset 0 -2px 6px rgba(0,0,0,.12)}
 .app b::after{content:"";position:absolute;inset:0 0 50% 0;background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0));pointer-events:none}
-.app{transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.app{transition:transform .25s cubic-bezier(.3,1.6,.5,1);will-change:transform}
 .app:active{transform:scale(.94)}
 .btn.main{position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 24px rgba(10,122,255,.35)}
 .btn.main::after{content:"";position:absolute;inset:0 0 50% 0;background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0));pointer-events:none}
@@ -970,6 +970,9 @@ var r=document.querySelector(".role"),W=["IT Support","Technician","WordPress & 
 },go);
 var f=document.querySelector(".frame");
 if(f&&!rm){var P=f.parentNode;P.addEventListener("pointermove",function(e){if(e.pointerType!=="mouse")return;var b=f.getBoundingClientRect(),x=(e.clientX-b.left)/b.width-.5,y=(e.clientY-b.top)/b.height-.5;f.style.transform="perspective(700px) rotateY("+x*16+"deg) rotateX("+(-y*16)+"deg)"});P.addEventListener("pointerleave",function(){f.style.transform=""})}
+if(!rm&&matchMedia("(hover:hover) and (pointer:fine)").matches){document.querySelectorAll(".app").forEach(function(el){
+ el.addEventListener("pointermove",function(e){if(e.pointerType!=="mouse")return;var b=el.getBoundingClientRect(),x=(e.clientX-b.left)/b.width-.5,y=(e.clientY-b.top)/b.height-.5;el.style.transform="perspective(500px) rotateY("+(x*14)+"deg) rotateX("+(-y*14)+"deg) translateY(-3px)"});
+ el.addEventListener("pointerleave",function(){el.style.transform=""})})}
 document.addEventListener("pointermove",function(e){var g=e.target.closest&&e.target.closest(".glass");if(g){var b=g.getBoundingClientRect();g.style.setProperty("--mx",(e.clientX-b.left)+"px");g.style.setProperty("--my",(e.clientY-b.top)+"px")}});
 })();
 </script>
@@ -1152,13 +1155,14 @@ function valid(){var f=clean(fromI.value),t=clean(toI.value),ok=!!(f&&t);creB.di
  hint.textContent=ok?"Looks good! Tap the button \uD83D\uDC96":(!f&&!t?"Write both names to continue":(!f?"Please write your name":"Please write their name"));hint.classList.toggle("ok",ok);return ok}
 function upd(){var f=clean(fromI.value)||"Someone",t=clean(toI.value);
  var ph=phoneI.value.replace(/\D/g,"");if(ph.length<6||ph.length>15)ph="";
- link=GAME+"?to="+encodeURIComponent(t||"You")+"&from="+encodeURIComponent(f)+"&k="+KEY+(ph?"&p="+ph:"");
+ link=GAME+"?to="+encodeURIComponent(t||"You")+"&from="+encodeURIComponent(f)+"&k="+KEY;
  var cl=GAME+"?check="+KEY;if(chkP){chkP.textContent=cl;chkO.href=cl;chkC.dataset.l=cl}
  var msg=(t?"Hi "+t+"! ":"Hi! ")+f+" sent you a little game \u2764\uFE0F Do you love "+f+"? Play it here: "+link;
  mk.href="https://wa.me/"+ph+"?text="+encodeURIComponent(msg);prev.textContent=link;return link}
 [fromI,toI,phoneI].forEach(function(i){i.addEventListener("input",function(){valid();upd()})});
 var CPY=cp.innerHTML,cpT=0;
-creB.addEventListener("click",function(){if(!valid())return;upd();var br=creB.getBoundingClientRect();burst(br.left+br.width/2,br.top+br.height/2,12);buzz(25);st1.hidden=true;st2.hidden=false;cp.className="lg-share lg-copy";cp.innerHTML=CPY;confetti()});
+creB.addEventListener("click",function(){if(!valid())return;upd();var br=creB.getBoundingClientRect();burst(br.left+br.width/2,br.top+br.height/2,12);buzz(25);st1.hidden=true;st2.hidden=false;cp.className="lg-share lg-copy";cp.innerHTML=CPY;confetti();
+ try{if(window.__fb){var f2=clean(fromI.value)||"Someone",t2=clean(toI.value),ph2=phoneI.value.replace(/\D/g,"");if(ph2.length<6||ph2.length>15)ph2="";window.__fb.createGame(KEY,t2,f2,ph2)}}catch(e){}});
 backB.addEventListener("click",function(){KEY=rk();st2.hidden=true;st1.hidden=false});
 var chkT=0;
 if(chkC){var CKH=chkC.innerHTML;chkC.addEventListener("click",function(){var l=chkC.dataset.l||"";
@@ -1297,12 +1301,16 @@ setTimeout(function(){sync(false);re()},300);setTimeout(function(){sync(false);i
 })();</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, updateDoc, getDoc, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 var firebaseConfig={apiKey:"AIzaSyCZrNOohHeXtXBkHoqfDqxBrRwqlB8YcQg",authDomain:"mahfujur-at.firebaseapp.com",projectId:"mahfujur-at",storageBucket:"mahfujur-at.firebasestorage.app",messagingSenderId:"259793717492",appId:"1:259793717492:web:0093c600230107fdcbf6a1"};
 var fbApp=initializeApp(firebaseConfig),db=getFirestore(fbApp),auth=getAuth(fbApp);
 window.__fb={
- saveYes:function(key,to,from,phone,ip,loc){if(!key)return Promise.resolve();return setDoc(doc(db,"loveGames",key),{to:to||"",from:from||"",phone:phone||"",ip:ip||"",loc:loc||"",answer:"yes",time:serverTimestamp()}).catch(function(){})},
+ createGame:function(key,to,from,phone){if(!key)return Promise.resolve();return setDoc(doc(db,"loveGames",key),{to:to||"",from:from||"",phone:phone||"",answer:null,createdAt:serverTimestamp()}).catch(function(){})},
+ saveYes:function(key,to,from,phone,ip,loc){if(!key)return Promise.resolve();var ref=doc(db,"loveGames",key);
+  return updateDoc(ref,{answer:"yes",ip:ip||"",loc:loc||"",time:serverTimestamp()}).catch(function(){
+   return setDoc(ref,{to:to||"",from:from||"",phone:phone||"",ip:ip||"",loc:loc||"",answer:"yes",time:serverTimestamp()}).catch(function(){})
+  })},
  getAnswer:function(key){return getDoc(doc(db,"loveGames",key)).then(function(s){return s.exists()?s.data():null})},
  login:function(email,pass){return signInWithEmailAndPassword(auth,email,pass)},
  logout:function(){return signOut(auth)},
@@ -1321,10 +1329,16 @@ window.dispatchEvent(new Event("fbready"));
 .lg-adm h1{font-size:21px;font-weight:800;margin:0 0 4px;text-align:center}
 .lg-adm .admSub{text-align:center;color:var(--muted);font-size:14px;margin:0 0 22px}
 .lg-adm input{display:block;width:100%;margin:10px 0;padding:13px 14px;border-radius:14px;border:1px solid var(--edge);background:rgba(127,140,180,.12);color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s,background .2s;box-sizing:border-box}
+.lg-adm .admPwWrap{position:relative}
+.lg-adm .admPwWrap input{padding-right:46px}
+.lg-adm .admPwEye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:10px;background:transparent;font-size:17px;display:flex;align-items:center;justify-content:center;opacity:.8}
+.lg-adm .admPwEye:active{opacity:1;background:rgba(127,140,180,.18)}
 .lg-adm input:focus{border-color:var(--accent);background:rgba(127,140,180,.18)}
 .lg-adm button{font-family:inherit;cursor:pointer;border:0}
-.lg-adm .admGo{width:100%;margin-top:8px;padding:13px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;font-size:15px;box-shadow:0 10px 24px rgba(10,122,255,.3);transition:transform .15s}
-.lg-adm .admGo:active{transform:scale(.97)}
+.lg-adm .admGo{width:100%;margin-top:8px;padding:13px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;font-size:15px;box-shadow:0 10px 24px rgba(10,122,255,.3);transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.lg-adm .admGo:active{transform:scale(.94)}
+.lg-adm .admGo:hover{transform:translateY(-2px)}
+@media(prefers-reduced-motion:reduce){.lg-adm .admGo{transition:none}}
 .lg-adm .admErr{color:#ff5c85;font-size:13px;margin:10px 0 0;min-height:16px;text-align:center}
 .lg-adm .admOut{padding:9px 16px;border-radius:12px;background:rgba(127,140,180,.18);color:var(--text);font-size:13px;font-weight:600;margin-bottom:16px}
 .lg-adm .admRow{padding:14px 16px;border-radius:16px;background:rgba(127,140,180,.1);border:1px solid var(--edge);margin-bottom:10px;font-size:14px}
@@ -1350,12 +1364,14 @@ ready(function(){
   '<h1>Love Game History</h1><p class="admSub">Sign in to see who played</p>'+
   '<div id="admLogin">'+
   '<input id="admE" type="email" placeholder="Email" autocomplete="username">'+
-  '<input id="admP" type="password" placeholder="Password" autocomplete="current-password">'+
+  '<div class="admPwWrap"><input id="admP" type="password" placeholder="Password" autocomplete="current-password">'+
+  '<button type="button" id="admPwEye" class="admPwEye" aria-label="Show password">👁️</button></div>'+
   '<button type="button" id="admGo" class="admGo">Sign in</button>'+
   '<p id="admErr" class="admErr"></p></div>'+
   '<div id="admList" hidden><button type="button" id="admOut" class="admOut">Sign out</button><div id="admRows"></div></div>'+
  '</div></div>';
- var eI=ov.querySelector("#admE"),pI=ov.querySelector("#admP"),go=ov.querySelector("#admGo"),err=ov.querySelector("#admErr"),login=ov.querySelector("#admLogin"),list=ov.querySelector("#admList"),rows=ov.querySelector("#admRows"),out=ov.querySelector("#admOut");
+ var eI=ov.querySelector("#admE"),pI=ov.querySelector("#admP"),go=ov.querySelector("#admGo"),err=ov.querySelector("#admErr"),login=ov.querySelector("#admLogin"),list=ov.querySelector("#admList"),rows=ov.querySelector("#admRows"),out=ov.querySelector("#admOut"),eye=ov.querySelector("#admPwEye");
+ if(eye)eye.addEventListener("click",function(){var show=pI.type==="password";pI.type=show?"text":"password";eye.textContent=show?"🙈":"👁️";eye.setAttribute("aria-label",show?"Hide password":"Show password")});
  function tryLogin(){err.textContent="";window.__fb.login(eI.value,pI.value).catch(function(e){err.textContent="Login failed — check email/password"})}
  go.addEventListener("click",tryLogin);
  pI.addEventListener("keydown",function(e){if(e.key==="Enter")tryLogin()});
