@@ -1587,7 +1587,7 @@ function render(){
  window.addEventListener("resize",placeCats);
  window.__fb.onAuth(function(u){
   var tpEl=ov.querySelector("#admTop"),hdEl=ov.querySelector("#admHead");
-  if(u){login.hidden=true;list.hidden=false;if(tpEl&&hdEl){hdEl.appendChild(tpEl);tpEl.hidden=false}load()}
+  if(u){login.hidden=true;list.hidden=false;ov.querySelector(".admWrap").classList.add("wide");if(tpEl&&hdEl){hdEl.appendChild(tpEl);tpEl.hidden=false}load()}
   else{login.hidden=false;list.hidden=true;if(tpEl)tpEl.hidden=true;sub.textContent="Sign in to see your dashboard"}
  })
 })
