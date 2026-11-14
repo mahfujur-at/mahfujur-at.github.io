@@ -1437,8 +1437,12 @@ if(window.__fb)log();else window.addEventListener("fbready",log,{once:true})
 .lg-adm .admColBar{width:100%;max-width:38px;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--accent),var(--accent2))}
 .lg-adm .admCol small{font-size:11px;color:var(--muted)}
 .lg-adm .admDetail{display:block}
-.lg-adm .admSplit{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:600px){.lg-adm .admSplit{grid-template-columns:230px 1fr;align-items:start}}
+.lg-adm .admSplit{display:grid;grid-template-columns:128px minmax(0,1fr);gap:8px;align-items:start}
+.lg-adm .admCatTxt small,.lg-adm .admCatBar{display:none}
+.lg-adm .admCat{grid-template-columns:auto minmax(0,1fr);gap:6px;padding:10px 8px}
+.lg-adm .admCatVal{font-size:13px;grid-column:1 / 3;text-align:left}
+.lg-adm .admMain{padding:12px;min-width:0}
+@media(min-width:600px){.lg-adm .admSplit{grid-template-columns:230px minmax(0,1fr);gap:12px}.lg-adm .admCatTxt small{display:block}.lg-adm .admCat{grid-template-columns:auto 1fr auto;padding:12px}.lg-adm .admCatVal{grid-column:auto;font-size:15px}.lg-adm .admCatBar{display:block;grid-column:2 / 4}.lg-adm .admMain{padding:16px}}
 .lg-adm .admCats{display:flex;flex-direction:column;gap:8px}
 .lg-adm .admCat{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 10px;padding:12px;border-radius:16px;background:var(--glass);border:1px solid var(--edge);color:var(--text);text-align:left;font-family:inherit;cursor:pointer;transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
 .lg-adm .admCat:active{transform:scale(.97)}
@@ -1452,9 +1456,17 @@ if(window.__fb)log();else window.addEventListener("fbready",log,{once:true})
 .lg-adm .admMain{padding:16px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);min-width:0}
 .lg-adm .admMain h2{font-size:17px;margin:0 0 10px}
 .lg-adm .admMain h3{font-size:14px;margin:14px 0 8px}
-.lg-adm .admWrap.wide{max-width:960px}
+.lg-adm .admWrap.wide{max-width:none;width:100%}
 .lg-adm .ico{width:20px;height:20px;display:inline-block;vertical-align:-5px;flex:none}
 .lg-adm .admStat small .ico{width:14px;height:14px;vertical-align:-2px;margin-right:2px}
+.lg-adm .admLineWrap{padding:6px 0 0}
+.lg-adm .admLine{width:100%;height:150px;display:block}
+.lg-adm .admLbls{display:flex;margin-top:6px}
+.lg-adm .admLbls span{flex:1;text-align:center;font-size:11px;color:var(--muted);line-height:1.3}
+.lg-adm .admStat{background:linear-gradient(135deg,rgba(10,122,255,.10),rgba(94,92,230,.07))}
+.lg-adm .admCat.on{background:linear-gradient(135deg,rgba(10,122,255,.20),rgba(94,92,230,.14))}
+.lg-adm .admSec,.lg-adm .admMain{box-shadow:0 10px 30px rgba(20,30,70,.08)}
+.lg-adm .admCatBar i{background:linear-gradient(90deg,#2563eb,#7c3aed)}
 @media(prefers-reduced-motion:reduce){.lg-adm .admWrap{animation:none;opacity:1;transform:none}}
 </style>
 <script>(function(){
@@ -1531,9 +1543,14 @@ function render(){
     var days=[];for(var i=6;i>=0;i--){var d=new Date(today);d.setDate(today.getDate()-i);days.push({label:(d.getMonth()+1)+"/"+d.getDate(),t0:d.getTime(),n:0})}
     v.forEach(function(x){var d=ts(x.time);if(!d)return;var t=new Date(d);t.setHours(0,0,0,0);var k=t.getTime();days.forEach(function(dd){if(dd.t0===k)dd.n++})});
     var maxN=Math.max(1,Math.max.apply(null,days.map(function(d){return d.n})));
+    var W=300,H=120,pts=days.map(function(d,i){return [Math.round(i*W/6),Math.round(H-10-(d.n*(H-30)/maxN))]});
+    var lineP=pts.map(function(p){return p[0]+","+p[1]}).join(" ");
+    var areaP="M0,"+H+" L"+lineP.split(" ").join(" L")+" L"+W+","+H+" Z";
+    var svg='<svg class="admLine" viewBox="0 0 '+W+' '+H+'" aria-label="Visits last 7 days"><defs><linearGradient id="admG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity=".35"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient></defs><path d="'+areaP+'" fill="url(#admG)"/><polyline points="'+lineP+'" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linejoin="round"/>'+pts.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#2563eb"/>'}).join("")+'</svg>';
+    var labels='<div class="admLbls">'+days.map(function(d){return '<span>'+d.n+'<br>'+d.label+'</span>'}).join("")+'</div>';
+    var chartHtml='<h3>Visits — last 7 days</h3><div class="admLineWrap">'+svg+labels+'</div>';
     title="Visitors";
-    body='<h3>Visits — last 7 days</h3><div class="admChart">'+days.map(function(d){return '<div class="admCol"><span>'+d.n+'</span><div class="admColBar" style="height:'+Math.max(4,Math.round(d.n*100/maxN))+'%"></div><small>'+d.label+'</small></div>'}).join("")+'</div>'+
-      '<h3>Who visited (IP wise)</h3>'+arr.map(function(a){return row('<b>'+E(a.ip)+'</b> — '+a.n+' visit',[a.loc,uaInfo(a.ua),"Last: "+fmt(a.last)])}).join("")+empty(arr,"No visits yet")+
+    body=chartHtml+'<h3>Who visited (IP wise)</h3>'+arr.map(function(a){return row('<b>'+E(a.ip)+'</b> — '+a.n+' visit',[a.loc,uaInfo(a.ua),"Last: "+fmt(a.last)])}).join("")+empty(arr,"No visits yet")+
       '<h3>Recent visits</h3>'+v.slice(0,20).map(function(x){return row('<b>'+E(x.path||"/")+'</b>',[fmt(x.time),x.ip,x.loc,uaInfo(x.ua)])}).join("");
   }
   else if(cat==="devices"){title="Devices";body=donut(devD,v.length)+bars(devD,v.length)}
