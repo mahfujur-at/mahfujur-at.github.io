@@ -1349,7 +1349,7 @@ window.dispatchEvent(new Event("fbready"));
 </script>
 <script>window.__ipLookup=function(){return fetch("https://ipapi.co/json/").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){if(j&&j.ip)return j;return fetch("https://api.ipify.org?format=json").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(k){return k&&k.ip?{ip:k.ip}:null})})};
 (function(){
-function log(){try{window.__ipLookup().then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){
+function log(){try{window.__ipLookup().then(function(j){
  var ip=j&&j.ip||"",loc=j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"";
  window.__fb.logVisit(ip,loc,navigator.userAgent,location.pathname,document.referrer);
  window.__fb.bumpViews()
@@ -1558,9 +1558,11 @@ function render(){
   else if(cat==="locations"){title="Locations (country)";body=bars(coD,v.length)}
   else if(cat==="downloads"){title="CV / file downloads";body=bars(flD,dl.length)+'<h3>Who downloaded</h3>'+dl.map(function(x){return row('<b>'+E(fileOf(x.file))+'</b>',[fmt(x.time),x.ip,x.loc,uaInfo(x.ua)])}).join("")+empty(dl,"No downloads yet")}
   else if(cat==="love"){title="Love Game history";body=g.map(function(it){var extra=[];if(it.phone)extra.push("📱 "+it.phone);if(it.loc)extra.push("📍 "+it.loc);if(it.ip)extra.push("IP: "+it.ip);return '<div class="admRow"><b>'+E(it.from||"Someone")+'</b> → <b>'+E(it.to||"Someone")+'</b> : <span class="yes">YES ❤️</span><small>'+E(fmt(it.time))+(extra.length?" — "+extra.map(E).join(" · "):"")+'</small></div>'}).join("")+empty(g,"No games yet — share your Love Game link!")}
+  var keepY=ov.scrollTop;
   detail.hidden=false;
   detail.innerHTML='<div class="admSplit"><div class="admCats">'+catHtml+'</div><div class="admMain"><h2>'+E(title)+'</h2>'+body+'</div></div>';
   detail.querySelectorAll(".admCat").forEach(function(b){b.addEventListener("click",function(){cat=b.getAttribute("data-k");render()})});
+  ov.scrollTop=keepY;
 }
  function load(){
   sub.textContent="Loading…";
