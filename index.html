@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline' https://www.gstatic.com; connect-src https://ntfy.sh https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://ipapi.co; form-action 'none'; manifest-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline' https://www.gstatic.com; connect-src https://ntfy.sh https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://ipapi.co https://api.ipify.org; form-action 'none'; manifest-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Mahfujur Rahman: IT Support Technician and WordPress &amp; Elementor builder from Bangladesh, open to IT Support/Helpdesk work in Ireland.">
 <meta name="theme-color" content="#dfeaff">
@@ -1347,8 +1347,9 @@ window.__fb={
 };
 window.dispatchEvent(new Event("fbready"));
 </script>
-<script>(function(){
-function log(){try{fetch("https://ipapi.co/json/").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){
+<script>window.__ipLookup=function(){return fetch("https://ipapi.co/json/").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){if(j&&j.ip)return j;return fetch("https://api.ipify.org?format=json").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(k){return k&&k.ip?{ip:k.ip}:null})})};
+(function(){
+function log(){try{window.__ipLookup().then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){
  var ip=j&&j.ip||"",loc=j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"";
  window.__fb.logVisit(ip,loc,navigator.userAgent,location.pathname,document.referrer);
  window.__fb.bumpViews()
@@ -1358,7 +1359,7 @@ if(window.__fb)log();else window.addEventListener("fbready",log,{once:true})
 <style>
 .lg-adm{position:fixed;inset:0;z-index:999;overflow:auto;padding:40px 16px;display:flex;align-items:center;justify-content:center;font-family:inherit;
  background:radial-gradient(1200px 800px at 15% -10%,var(--bg2),transparent),radial-gradient(1000px 700px at 110% 10%,var(--bg3),transparent),var(--bg1);color:var(--text)}
-.lg-adm .admWrap{width:100%;max-width:520px;opacity:0;transform:translateY(14px);animation:admIn .5s cubic-bezier(.22,1,.36,1) forwards}
+.lg-adm .admWrap{width:100%;max-width:520px;margin:auto;opacity:0;transform:translateY(14px);animation:admIn .5s cubic-bezier(.22,1,.36,1) forwards}
 @keyframes admIn{to{opacity:1;transform:none}}
 .lg-adm .admCard{position:relative;border-radius:28px;padding:34px 28px;background:var(--glass);border:1px solid var(--edge);box-shadow:0 18px 50px var(--shadow);-webkit-backdrop-filter:blur(calc(12px + var(--gi)*30px)) saturate(190%);backdrop-filter:blur(calc(12px + var(--gi)*30px)) saturate(190%)}
 .lg-adm .admIc{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;overflow:hidden;box-shadow:0 10px 26px rgba(10,122,255,.35);background:var(--bg1)}.lg-adm .admIc img{width:100%;height:100%;object-fit:cover}
@@ -1491,7 +1492,7 @@ ready(function(){
  var D={visits:[],downloads:[],games:[],views:0},active="";
  function E(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
  function ts(t){return t&&t.seconds?new Date(t.seconds*1000):null}
- function fmt(t){var d=ts(t);return d?d.toLocaleString():""}
+ function fmt(t){var d=ts(t);return d?d.toLocaleString():"just now"}
  function pct(n,tot){return tot?Math.round(n*1000/tot)/10:0}
  function tally(arr,fn){var m={};arr.forEach(function(x){var k=fn(x)||"Unknown";m[k]=(m[k]||0)+1});return Object.keys(m).map(function(k){return{name:k,n:m[k]}}).sort(function(a,b){return b.n-a.n})}
  function devOf(ua){return uaInfo(ua).split(" · ")[0]||""}
@@ -1568,7 +1569,7 @@ function render(){
 document.addEventListener("click",function(e){
  var a=e.target.closest&&e.target.closest("#cvMenu a[download]");if(!a)return;
  var name=a.getAttribute("href")||"";
- fetch("https://ipapi.co/json/").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){
+ window.__ipLookup().then(function(j){
   var ip=j&&j.ip||"",loc=j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"";
   try{if(window.__fb)window.__fb.logDownload(name,ip,loc,navigator.userAgent)}catch(err){}
  });
