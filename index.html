@@ -180,7 +180,7 @@ main{padding-top:64px}
 @media(prefers-reduced-motion:reduce){.chip{opacity:1!important}}
 #qb.cats{display:grid;grid-template-columns:1fr 1fr;gap:8px}#qb.cats .btn{text-align:left;padding:12px 14px;font-size:14px;line-height:1.3}
 @media(max-width:380px){#qb.cats{grid-template-columns:1fr}}
-#about{display:flow-root}.aboutpic{float:right;width:clamp(170px,38%,290px);height:auto;margin:4px 18px 10px 10px;filter:drop-shadow(0 14px 18px var(--shadow))}
+#about{display:flow-root}#about p{font-size:16.2px}.aboutpic{float:right;width:clamp(170px,38%,290px);height:auto;margin:4px 18px 10px 10px;filter:drop-shadow(0 14px 18px var(--shadow))}
 @media(min-width:900px){.aboutpic{width:clamp(240px,34%,340px);margin:4px 28px 10px 14px}#about p{max-width:540px}}
 .edu{margin-top:12px;padding-left:13px;border-left:3px solid var(--accent)}
 .edu strong{display:block;font-size:15px;line-height:1.35}
@@ -239,6 +239,15 @@ main{padding-top:64px}
 .auspanel a{flex:1;text-align:center;padding:10px 16px;border-radius:99px;background:rgba(127,140,180,.16);border:1px solid var(--edge);color:var(--text);text-decoration:none;transition:transform .2s}.auspanel a:hover{transform:translateY(-1px)}.auspanel a.g{background:rgba(48,209,88,.16);border-color:rgba(48,209,88,.4)}
 .auspanel a{display:flex;align-items:center;justify-content:center;gap:9px}.auspanel .ic{flex:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
 .hero .auspanel{max-width:520px;width:100%}
+.cvDd{position:relative}
+#cvBtn{padding:9px 16px;line-height:1.5}
+.hero .btns .btn{padding:9px 16px;display:inline-flex;align-items:center;justify-content:center}
+.hero .btns{gap:6px}
+@media (max-width:400px){.hero .btns .btn,#cvBtn{padding:9px 10px;font-size:14px}}
+.cvMenu{position:fixed;top:0;left:0;transform:translateX(-50%) translateY(-6px);min-width:130px;background:var(--glass);backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%);border:1px solid var(--edge);border-radius:16px;box-shadow:0 10px 30px var(--shadow),inset 0 1px 0 rgba(255,255,255,.5);padding:6px;display:flex;flex-direction:column;gap:4px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:120}
+.cvMenu.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.cvMenu a{display:block;padding:6px 10px;border-radius:10px;color:var(--text);text-decoration:none;font-size:12px;font-weight:600;text-align:center;background:rgba(127,140,180,.12);transition:background .2s}
+.cvMenu a:hover{background:rgba(127,140,180,.22)}
 @media(min-width:900px){
  main>.hero{display:block;text-align:center;padding:44px 46px 40px}
  .hero>.frame{width:240px;margin:0 auto 24px}
@@ -883,7 +892,7 @@ nav.nv .nv-ov a{color:#fff!important;background:none!important;box-shadow:none!i
   <div class="tags"><span class="tag">IT Support</span><span class="tag">Technician</span><span class="tag">WordPress &amp; Elementor</span></div>
   <div class="stats"><div><b id="cnt">300+</b><small>Happy clients</small></div><div><b>9</b><small>Skill areas</small></div><button type="button" class="aus" id="aus" aria-expanded="false" aria-controls="auspanel"><b><svg width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="Ireland flag" style="display:block;margin:0 auto;border-radius:50%;box-shadow:0 0 0 2px var(--edge),0 4px 10px var(--shadow)"><rect width="30" height="30" fill="#fff"/><rect width="10" height="30" fill="#169b62"/><rect x="20" width="10" height="30" fill="#ff883e"/></svg></b><small>Ireland ready</small></button></div>
   <div class="auspanel" id="auspanel"><span><i></i>Open to work in Ireland</span><a href="mailto:mahfujur.at@gmail.com"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6.5" fill="#0a84ff"/><rect x="4.5" y="7" width="15" height="10.5" rx="2.2" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M5.5 8.6l6.5 5 6.5-5" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Email</a><a class="g" href="https://wa.me/8801332111908" target="_blank" rel="noopener noreferrer"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6.5" fill="#25d366"/><path d="M12 4.6a7.4 7.4 0 0 0-6.3 11.2L4.8 19.4l3.7-.9A7.4 7.4 0 1 0 12 4.6z" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.6 8.9c-.3.4-.5 1-.2 1.8.5 1.4 1.9 2.9 3.3 3.5.9.4 1.5.2 1.9-.2l.3-.8-1.5-.8-.6.6c-.8-.3-1.6-1.1-1.9-1.9l.6-.6-.7-1.5z" fill="#fff"/></svg>WhatsApp</a></div>
-  <div class="btns"><a class="btn main" href="#contact">Get in touch</a><a class="btn" href="#work">My skills</a></div>
+  <div class="btns"><a class="btn main" href="#contact">Get in touch</a><div class="cvDd" id="cvDd"><button type="button" class="btn" id="cvBtn" aria-haspopup="true" aria-expanded="false">CV</button><div class="cvMenu" id="cvMenu"><a href="CV_Mahfujur_Rahman.pdf" download>PDF</a><a href="CV_Mahfujur_Rahman.docx" download>Word (.docx)</a><a href="CV_Mahfujur_Rahman.png" download>PNG image</a><a href="CV_Mahfujur_Rahman.jpg" download>JPG image</a></div></div><a class="btn" href="#work">My skills</a></div>
 </section>
 
 <div class="ribbon" aria-label="Tools and technologies"><div class="track"><span>Windows 10/11</span><span>Linux</span><span>MS Office 365</span><span>Google Workspace</span><span>TeamViewer</span><span>AnyDesk</span><span>LAN / WAN</span><span>Router setup</span><span>CCTV</span><span>WordPress</span><span>Elementor</span><span>WooCommerce</span><span>Windows 10/11</span><span>Linux</span><span>MS Office 365</span><span>Google Workspace</span><span>TeamViewer</span><span>AnyDesk</span><span>LAN / WAN</span><span>Router setup</span><span>CCTV</span><span>WordPress</span><span>Elementor</span><span>WooCommerce</span></div></div>
@@ -1012,6 +1021,7 @@ el.addEventListener("pointerleave",function(){el.style.transform=""})});
 <script>(function(){var w=document.querySelector(".fab.wa");function f(){var max=document.body.scrollHeight-innerHeight;var t=Math.max(200,max*.15);var nearBottom=(max-scrollY)<130;w.classList.toggle("show",scrollY>t&&!nearBottom)}addEventListener("scroll",f,{passive:true});addEventListener("resize",f);f()})();</script>
 <script>(function(){var L=document.querySelectorAll("nav a");function f(){if(scrollY<160){L.forEach(function(a,j){a.classList.toggle("on",j===0)})}}addEventListener("scroll",f,{passive:true});f()})();</script>
 <script>(function(){var b=document.getElementById("aus"),p=document.getElementById("auspanel");if(!b||!p)return;b.onclick=function(e){e.stopPropagation();var o=!p.classList.contains("open");p.classList.toggle("open",o);b.setAttribute("aria-expanded",o)};document.addEventListener("click",function(e){if(!p.contains(e.target)&&e.target!==b){p.classList.remove("open");b.setAttribute("aria-expanded","false")}})})();</script>
+<script>(function(){var d=document.getElementById("cvDd"),b=document.getElementById("cvBtn"),m=document.getElementById("cvMenu");if(!d||!b||!m)return;document.body.appendChild(m);function place(){var r=b.getBoundingClientRect();var h=m.offsetHeight||200;var top=r.bottom+8;if(top+h>innerHeight)top=Math.max(8,r.top-h-8);m.style.left=(r.left+r.width/2)+"px";m.style.top=top+"px"}function close(){d.classList.remove("open");m.classList.remove("open");b.setAttribute("aria-expanded","false")}b.onclick=function(e){e.stopPropagation();var o=!d.classList.contains("open");if(o){place();requestAnimationFrame(place)}d.classList.toggle("open",o);m.classList.toggle("open",o);b.setAttribute("aria-expanded",o)};document.addEventListener("click",function(e){if(!m.contains(e.target)&&e.target!==b)close()});document.addEventListener("keydown",function(e){if(e.key==="Escape")close()});addEventListener("scroll",function(){if(d.classList.contains("open"))place()},{passive:true});addEventListener("resize",function(){if(d.classList.contains("open"))place()})})();</script>
 <div class="glp" id="glp" role="dialog" aria-label="Appearance"><div class="seg" id="seg"><span class="seg-th" aria-hidden="true"></span><button type="button" data-t="light">☀️ Light</button><button type="button" data-t="dark">🌙 Dark</button></div><hr><b>Liquid Glass</b><p>Adjust how see-through the design looks.</p><div class="gsw"><input id="gs" type="range" min="0" max="100" value="40" aria-label="Liquid Glass intensity"><output class="gv" id="gv" aria-hidden="true">40%</output></div><div class="lbl"><span>Clear</span><span class="gp" id="gp">40%</span><span>Tinted</span></div><hr><button type="button" class="lg-open" id="lgOpen"><span class="lg-ic" aria-hidden="true"><svg viewBox="0 0 24 24" class="lg-h"><g fill="#fff"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6 5c2 0 3.4 1 4.2 2.3h3.6C14.6 6 16 5 18 5c3.3 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></g></svg><i class="lg-sp lg-sp1"></i><i class="lg-sp lg-sp2"></i></span><span class="lg-tx"><b>Love Game</b><small>A fun little game</small></span><span class="lg-chev lg-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5l6.5 6.5-6.5 6.5"/></svg></span></button></div>
 <script>(function(){
 var r=document.documentElement,b=document.getElementById("tg"),p=document.getElementById("glp"),s=document.getElementById("gs");
@@ -1314,7 +1324,7 @@ setTimeout(function(){sync(false);re()},300);setTimeout(function(){sync(false);i
 })();</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc, getDoc, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, addDoc, setDoc, updateDoc, getDoc, collection, query, orderBy, limit, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 var firebaseConfig={apiKey:"AIzaSyCZrNOohHeXtXBkHoqfDqxBrRwqlB8YcQg",authDomain:"mahfujur-at.firebaseapp.com",projectId:"mahfujur-at",storageBucket:"mahfujur-at.firebasestorage.app",messagingSenderId:"259793717492",appId:"1:259793717492:web:0093c600230107fdcbf6a1"};
 var fbApp=initializeApp(firebaseConfig),db=getFirestore(fbApp),auth=getAuth(fbApp);
@@ -1328,10 +1338,22 @@ window.__fb={
  login:function(email,pass){return signInWithEmailAndPassword(auth,email,pass)},
  logout:function(){return signOut(auth)},
  onAuth:function(cb){onAuthStateChanged(auth,cb)},
- listAll:function(){var qy=query(collection(db,"loveGames"),orderBy("time","desc"));return getDocs(qy).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});return out})}
+ listAll:function(){var qy=query(collection(db,"loveGames"),orderBy("time","desc"));return getDocs(qy).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});return out})},
+ logVisit:function(ip,loc,ua,path,ref){return addDoc(collection(db,"visits"),{ip:ip||"",loc:loc||"",ua:ua||"",path:path||"",ref:ref||"",time:serverTimestamp()}).catch(function(){})},
+ bumpViews:function(){var ref=doc(db,"stats","site");return updateDoc(ref,{views:increment(1)}).catch(function(){return setDoc(ref,{views:1}).catch(function(){})})},
+ getStats:function(){return getDoc(doc(db,"stats","site")).then(function(s){return s.exists()?s.data():{views:0}})},
+ listVisits:function(n){var qy=query(collection(db,"visits"),orderBy("time","desc"),limit(n||200));return getDocs(qy).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});return out})}
 };
 window.dispatchEvent(new Event("fbready"));
 </script>
+<script>(function(){
+function log(){try{fetch("https://ipapi.co/json/").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){
+ var ip=j&&j.ip||"",loc=j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"";
+ window.__fb.logVisit(ip,loc,navigator.userAgent,location.pathname,document.referrer);
+ window.__fb.bumpViews()
+})}catch(e){}}
+if(window.__fb)log();else window.addEventListener("fbready",log,{once:true})
+})();</script>
 <style>
 .lg-adm{position:fixed;inset:0;z-index:999;overflow:auto;padding:40px 16px;display:flex;align-items:center;justify-content:center;font-family:inherit;
  background:radial-gradient(1200px 800px at 15% -10%,var(--bg2),transparent),radial-gradient(1000px 700px at 110% 10%,var(--bg3),transparent),var(--bg1);color:var(--text)}
@@ -1359,6 +1381,9 @@ window.dispatchEvent(new Event("fbready"));
 .lg-adm .admRow .yes{color:#2fb85c;font-weight:700}
 .lg-adm .admRow small{color:var(--muted);display:block;margin-top:4px}
 .lg-adm .admEmpty{text-align:center;color:var(--muted);padding:20px 0;font-size:14px}
+.lg-adm .admTabs{display:flex;gap:8px;margin-bottom:14px}
+.lg-adm .admTab{flex:1;padding:9px 10px;border-radius:12px;background:rgba(127,140,180,.12);color:var(--muted);font-size:13px;font-weight:600;border:1px solid transparent}
+.lg-adm .admTab.on{background:var(--accent);color:#fff}
 @media(prefers-reduced-motion:reduce){.lg-adm .admWrap{animation:none;opacity:1;transform:none}}
 </style>
 <script>(function(){
@@ -1371,32 +1396,48 @@ document.body.appendChild(ov);
 var timedOut=false,loadT=setTimeout(function(){timedOut=true;ov.innerHTML='<div class="admWrap"><div class="admCard" style="text-align:center"><p style="margin:10px 0">Could not connect. Check your internet and reload the page.</p></div></div>'},8000);
 function ready(fn){if(window.__fb){clearTimeout(loadT);fn()}else if(!timedOut)window.addEventListener("fbready",function(){clearTimeout(loadT);fn()},{once:true})}
 var heartSvg='<img src="'+((document.querySelector(".fab.logo img")||{}).src||"")+'" alt="Mahfujur Rahman">';
+function uaInfo(ua){if(!ua)return"";var dev="";if(/iPhone/i.test(ua))dev="iPhone";else if(/iPad/i.test(ua))dev="iPad";else if(/Android/i.test(ua))dev=/Mobile/i.test(ua)?"Android phone":"Android tablet";else if(/Macintosh/i.test(ua))dev="Mac";else if(/Windows/i.test(ua))dev="Windows PC";else if(/Linux/i.test(ua))dev="Linux PC";var br="";if(/EdgA|Edg\//i.test(ua))br="Edge";else if(/OPR\/|Opera/i.test(ua))br="Opera";else if(/SamsungBrowser/i.test(ua))br="Samsung Internet";else if(/CriOS/i.test(ua))br="Chrome";else if(/FxiOS|Firefox/i.test(ua))br="Firefox";else if(/Chrome/i.test(ua))br="Chrome";else if(/Safari/i.test(ua))br="Safari";return[dev,br].filter(Boolean).join(" · ")}
 ready(function(){
  ov.innerHTML='<div class="admWrap"><div class="admCard">'+
   '<div class="admIc">'+heartSvg+'</div>'+
-  '<h1>Love Game History</h1><p class="admSub">Sign in to see who played</p>'+
+  '<h1>Site Dashboard</h1><p class="admSub">Sign in to see visits &amp; Love Game history</p>'+
   '<div id="admLogin">'+
   '<input id="admE" type="email" placeholder="Email" autocomplete="username">'+
   '<div class="admPwWrap"><input id="admP" type="password" placeholder="Password" autocomplete="current-password">'+
   '<button type="button" id="admPwEye" class="admPwEye" aria-label="Show password">👁️</button></div>'+
   '<button type="button" id="admGo" class="admGo">Sign in</button>'+
   '<p id="admErr" class="admErr"></p></div>'+
-  '<div id="admList" hidden><button type="button" id="admOut" class="admOut">Sign out</button><div id="admRows"></div></div>'+
+  '<div id="admList" hidden><button type="button" id="admOut" class="admOut">Sign out</button>'+
+  '<p id="admViews" class="admSub" style="margin:4px 0 12px">Total views: …</p>'+
+  '<div class="admTabs"><button type="button" class="admTab on" data-tab="visits">Website Visits</button><button type="button" class="admTab" data-tab="love">Love Game</button></div>'+
+  '<div id="admRowsVisits"></div><div id="admRowsLove" hidden></div></div>'+
  '</div></div>';
- var eI=ov.querySelector("#admE"),pI=ov.querySelector("#admP"),go=ov.querySelector("#admGo"),err=ov.querySelector("#admErr"),login=ov.querySelector("#admLogin"),list=ov.querySelector("#admList"),rows=ov.querySelector("#admRows"),out=ov.querySelector("#admOut"),eye=ov.querySelector("#admPwEye");
+ var eI=ov.querySelector("#admE"),pI=ov.querySelector("#admP"),go=ov.querySelector("#admGo"),err=ov.querySelector("#admErr"),login=ov.querySelector("#admLogin"),list=ov.querySelector("#admList"),rowsV=ov.querySelector("#admRowsVisits"),rowsL=ov.querySelector("#admRowsLove"),out=ov.querySelector("#admOut"),eye=ov.querySelector("#admPwEye"),views=ov.querySelector("#admViews"),tabs=ov.querySelectorAll(".admTab");
  if(eye)eye.addEventListener("click",function(){var show=pI.type==="password";pI.type=show?"text":"password";eye.textContent=show?"🙈":"👁️";eye.setAttribute("aria-label",show?"Hide password":"Show password")});
  function tryLogin(){err.textContent="";window.__fb.login(eI.value,pI.value).catch(function(e){err.textContent="Login failed — check email/password"})}
  go.addEventListener("click",tryLogin);
  pI.addEventListener("keydown",function(e){if(e.key==="Enter")tryLogin()});
  out.addEventListener("click",function(){window.__fb.logout()});
+ tabs.forEach(function(t){t.addEventListener("click",function(){tabs.forEach(function(x){x.classList.toggle("on",x===t)});var tab=t.getAttribute("data-tab");rowsV.hidden=tab!=="visits";rowsL.hidden=tab!=="love"})});
  window.__fb.onAuth(function(u){
-  if(u){login.hidden=true;list.hidden=false;window.__fb.listAll().then(function(items){
-   if(!items.length){rows.innerHTML='<p class="admEmpty">No games yet — share your Love Game link!</p>';return}
-   rows.innerHTML=items.map(function(it){var t=it.time&&it.time.seconds?new Date(it.time.seconds*1000).toLocaleString():"";
-    var extra=[];if(it.phone)extra.push("📱 "+it.phone);if(it.loc)extra.push("📍 "+it.loc);if(it.ip)extra.push("IP: "+it.ip);
-    return '<div class="admRow"><b>'+(it.from||"Someone")+'</b> → <b>'+(it.to||"Someone")+'</b> : <span class="yes">YES ❤️</span><small>'+t+(extra.length?" — "+extra.join(" · "):"")+'</small></div>';
-   }).join("")
-  }).catch(function(){rows.innerHTML='<p class="admErr">Could not load history.</p>'})}
+  if(u){login.hidden=true;list.hidden=false;
+   window.__fb.getStats().then(function(s){views.textContent="Total views: "+(s&&s.views?s.views:0)}).catch(function(){views.textContent="Total views: —"});
+   window.__fb.listVisits().then(function(items){
+    if(!items.length){rowsV.innerHTML='<p class="admEmpty">No visits logged yet.</p>';return}
+    rowsV.innerHTML=items.map(function(it){var t=it.time&&it.time.seconds?new Date(it.time.seconds*1000).toLocaleString():"";
+     var dv=uaInfo(it.ua);
+     var extra=[];if(dv)extra.push("💻 "+dv);if(it.loc)extra.push("📍 "+it.loc);if(it.ip)extra.push("IP: "+it.ip);if(it.path)extra.push("Page: "+it.path);
+     return '<div class="admRow"><b>Visitor</b><small>'+t+(extra.length?" — "+extra.join(" · "):"")+'</small></div>';
+    }).join("")
+   }).catch(function(){rowsV.innerHTML='<p class="admErr">Could not load visits.</p>'});
+   window.__fb.listAll().then(function(items){
+    if(!items.length){rowsL.innerHTML='<p class="admEmpty">No games yet — share your Love Game link!</p>';return}
+    rowsL.innerHTML=items.map(function(it){var t=it.time&&it.time.seconds?new Date(it.time.seconds*1000).toLocaleString():"";
+     var extra=[];if(it.phone)extra.push("📱 "+it.phone);if(it.loc)extra.push("📍 "+it.loc);if(it.ip)extra.push("IP: "+it.ip);
+     return '<div class="admRow"><b>'+(it.from||"Someone")+'</b> → <b>'+(it.to||"Someone")+'</b> : <span class="yes">YES ❤️</span><small>'+t+(extra.length?" — "+extra.join(" · "):"")+'</small></div>';
+    }).join("")
+   }).catch(function(){rowsL.innerHTML='<p class="admErr">Could not load history.</p>'})
+  }
   else{login.hidden=false;list.hidden=true}
  })
 })
