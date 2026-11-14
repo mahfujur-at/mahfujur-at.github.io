@@ -1467,13 +1467,17 @@ if(window.__fb)log();else window.addEventListener("fbready",log,{once:true})
 .lg-adm .admCat.on{background:linear-gradient(135deg,rgba(10,122,255,.20),rgba(94,92,230,.14))}
 .lg-adm .admSec,.lg-adm .admMain{box-shadow:0 10px 30px rgba(20,30,70,.08)}
 .lg-adm .admCatBar i{background:linear-gradient(90deg,#2563eb,#7c3aed)}
+.lg-adm .admHead{position:sticky;top:0;z-index:8;background:#f6f8fc;padding-top:4px}
+.lg-adm .admTop{position:static;background:none;padding:6px 0 10px}
+.lg-adm .admTop .admStats{margin-bottom:0}
+.lg-adm .admCats{position:sticky;z-index:5;align-self:start}
 @media(prefers-reduced-motion:reduce){.lg-adm .admWrap{animation:none;opacity:1;transform:none}}
 </style>
 <script>(function(){
 if(new URLSearchParams(location.search).get("knight")!=="1")return;
 try{var curE=document.querySelector(".cur"),dotE=document.querySelector(".cdot");if(curE)curE.style.setProperty("z-index","1000","important");if(dotE)dotE.style.setProperty("z-index","1000","important")}catch(e){}
 var ov=document.createElement("div");
-ov.className="lg-adm";
+ov.className="lg-adm";document.documentElement.style.overflow="hidden";document.body.style.overflow="hidden";
 ov.innerHTML='<div class="admWrap"><div class="admCard" style="text-align:center"><p style="margin:10px 0">Loading…</p></div></div>';
 document.body.appendChild(ov);
 var timedOut=false,loadT=setTimeout(function(){timedOut=true;ov.innerHTML='<div class="admWrap"><div class="admCard" style="text-align:center"><p style="margin:10px 0">Could not connect. Check your internet and reload the page.</p></div></div>'},8000);
@@ -1482,16 +1486,16 @@ var heartSvg='<img src="'+((document.querySelector(".fab.logo img")||{}).src||""
 function uaInfo(ua){if(!ua)return"";var dev="";if(/iPhone/i.test(ua))dev="iPhone";else if(/iPad/i.test(ua))dev="iPad";else if(/Android/i.test(ua))dev=/Mobile/i.test(ua)?"Android phone":"Android tablet";else if(/Macintosh/i.test(ua))dev="Mac";else if(/Windows/i.test(ua))dev="Windows PC";else if(/Linux/i.test(ua))dev="Linux PC";var br="";if(/EdgA|Edg\//i.test(ua))br="Edge";else if(/OPR\/|Opera/i.test(ua))br="Opera";else if(/SamsungBrowser/i.test(ua))br="Samsung Internet";else if(/CriOS/i.test(ua))br="Chrome";else if(/FxiOS|Firefox/i.test(ua))br="Firefox";else if(/Chrome/i.test(ua))br="Chrome";else if(/Safari/i.test(ua))br="Safari";return[dev,br].filter(Boolean).join(" · ")}
 ready(function(){
  ov.innerHTML='<div class="admWrap"><div class="admCard">'+
-  '<div class="admIc">'+heartSvg+'</div>'+
-  '<h1>Site Dashboard</h1><p class="admSub" id="admSub">Sign in to see your dashboard</p>'+
+  '<div class="admHead" id="admHead"><div class="admIc">'+heartSvg+'</div>'+
+  '<h1>Site Dashboard</h1><p class="admSub" id="admSub">Sign in to see your dashboard</p></div>'+
   '<div id="admLogin">'+
   '<input id="admE" type="email" placeholder="Email" autocomplete="username">'+
   '<div class="admPwWrap"><input id="admP" type="password" placeholder="Password" autocomplete="current-password">'+
   '<button type="button" id="admPwEye" class="admPwEye" aria-label="Show password">👁️</button></div>'+
   '<button type="button" id="admGo" class="admGo">Sign in</button>'+
   '<p id="admErr" class="admErr"></p></div>'+
-  '<div id="admList" hidden><button type="button" id="admOut" class="admOut">Sign out</button>'+
-  '<div class="admStats" id="admStats"></div>'+'<div class="admGrid" id="admGrid"></div>'+
+  '<div id="admList" hidden><div class="admTop" id="admTop"><button type="button" id="admOut" class="admOut">Sign out</button>'+
+  '<div class="admStats" id="admStats"></div></div>'+'<div class="admGrid" id="admGrid"></div>'+
   '<div id="admDetail" class="admDetail" hidden></div></div>'+
  '</div></div>';
  var eI=ov.querySelector("#admE"),pI=ov.querySelector("#admP"),go=ov.querySelector("#admGo"),err=ov.querySelector("#admErr"),login=ov.querySelector("#admLogin"),list=ov.querySelector("#admList"),out=ov.querySelector("#admOut"),eye=ov.querySelector("#admPwEye"),sub=ov.querySelector("#admSub"),grid=ov.querySelector("#admGrid"),detail=ov.querySelector("#admDetail");
@@ -1518,6 +1522,7 @@ ready(function(){
  var P={users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',monitor:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/>',pin:'<path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>',eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'};
  function ico(n){return '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[n]||"")+'</svg>'}
  var cat="visitors";
+function placeCats(){var hd=ov.querySelector("#admHead"),cs=ov.querySelector(".admCats");if(!hd||!cs)return;cs.style.top=(hd.offsetHeight+52)+"px";}
 function render(){
   var v=D.visits,dl=D.downloads,g=D.games;
   var ips={};v.forEach(function(x){if(x.ip)ips[x.ip]=1});
@@ -1563,6 +1568,7 @@ function render(){
   detail.innerHTML='<div class="admSplit"><div class="admCats">'+catHtml+'</div><div class="admMain"><h2>'+E(title)+'</h2>'+body+'</div></div>';
   detail.querySelectorAll(".admCat").forEach(function(b){b.addEventListener("click",function(){cat=b.getAttribute("data-k");render()})});
   ov.scrollTop=keepY;
+  placeCats();
 }
  function load(){
   sub.textContent="Loading…";
@@ -1578,9 +1584,11 @@ function render(){
    render();
   });
  }
+ window.addEventListener("resize",placeCats);
  window.__fb.onAuth(function(u){
-  if(u){login.hidden=true;list.hidden=false;ov.querySelector(".admWrap").classList.add("wide");load()}
-  else{login.hidden=false;list.hidden=true;sub.textContent="Sign in to see your dashboard"}
+  var tpEl=ov.querySelector("#admTop"),hdEl=ov.querySelector("#admHead");
+  if(u){login.hidden=true;list.hidden=false;if(tpEl&&hdEl){hdEl.appendChild(tpEl);tpEl.hidden=false}load()}
+  else{login.hidden=false;list.hidden=true;if(tpEl)tpEl.hidden=true;sub.textContent="Sign in to see your dashboard"}
  })
 })
 })();</script>
