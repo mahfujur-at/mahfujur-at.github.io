@@ -1589,7 +1589,7 @@ function render(){
     ["visitors","users","Visitors",v.length,"Unique "+Object.keys(ips).length,pct(Object.keys(ips).length,v.length)],
     ["devices","monitor","Devices",devD[0]?devD[0].name:"—",devD[0]?pct(devD[0].n,v.length)+"% top":"",topShare(devD,v.length)],
     ["browsers","globe","Browsers",brD[0]?brD[0].name:"—",brD[0]?pct(brD[0].n,v.length)+"% top":"",topShare(brD,v.length)],
-    ["locations","pin","Locations",coD.length,"Countries",topShare(coD,v.length)],
+    ["locations","pin","Locations",coD[0]?coD[0].name:"—",coD[0]?pct(coD[0].n,v.length)+"% top":"",topShare(coD,v.length)],
     ["downloads","file","CV / Files",dl.length,"Downloads",pct(dl.length,v.length)],
     ["love","heart","Love Game",g.length,"Games",pct(g.length,v.length)]
   ];
