@@ -1563,7 +1563,7 @@ function srcOf(ref){if(ref===undefined)return "Unknown";if(!ref)return "Direct";
  var P={users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',monitor:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/>',pin:'<path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>',eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'};
  function ico(n){return '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[n]||"")+'</svg>'}
  var cat="visitors";
-function placeCats(){var hd=ov.querySelector("#admHead"),cs=ov.querySelector(".admCats");if(!hd||!cs)return;cs.style.top=(hd.offsetHeight+12)+"px";}
+function placeCats(){var hd=ov.querySelector("#admHead"),cs=ov.querySelector(".admCats");if(!hd||!cs)return;cs.style.top=(hd.offsetHeight+0)+"px";}
 function moreBtn(k){var isV=k==="visitors",more=isV?(D.vMore||(!D.vLegacyDone&&(D.vTotal==null||D.visits.length<D.vTotal))):(D.dMore&&(D.dTotal==null||D.downloads.length<D.dTotal)),n=isV?D.visits.length:D.downloads.length,tot=isV?D.vTotal:D.dTotal;if(!more)return '<p class="admEmpty">All '+n+' loaded</p>';return '<div class="admMoreWrap"><button type="button" id="admMoreBtn" class="admOut">Load more ('+n+' of '+(tot==null?"?":tot)+')</button></div>'}
 function resHtml(k){var items=D.qRes;if(items==null)return "";if(!items.length)return '<p class="admEmpty">Nothing found</p>';return items.map(function(x){return k==="downloads"?row('<b>'+E(fileOf(x.file))+'</b>',[fmt(x.time),x.ip,x.loc,uaInfo(x.ua)]):row('<b>'+E(x.path||"/")+'</b>',[fmt(x.time),x.ip,x.loc,uaInfo(x.ua)])}).join("")}
 function infoTxt(){return D.qRes==null?"":"Found: "+D.qRes.length+(D.qIsIp?" (by IP, all data)":" (in loaded data)")}
@@ -1719,7 +1719,10 @@ document.addEventListener("click",function(e){
 .lg-adm .admCatVal{grid-column:2!important;grid-row:2;justify-self:start;text-align:left;font-size:14px!important;max-width:100%;min-width:0;white-space:normal;line-height:1.15;overflow:hidden}
 .lg-adm .admCatBar{display:none}
 @media(max-width:599px){.lg-adm .admCats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:6px 0 8px!important}.lg-adm .admCat{grid-template-columns:auto minmax(0,1fr)!important;padding:8px!important}.lg-adm .admRing{display:none}.lg-adm .admCatTxt small{display:none}}
-.lg-adm{zoom:.67}
+.lg-adm{zoom:.67;align-items:flex-start!important;padding:0 16px 24px!important}
+.lg-adm .admCats{padding-top:0!important;margin-top:0!important}
+.lg-adm #admGrid{margin-bottom:0!important;height:6px}
+.lg-adm .admHead{padding-bottom:0!important}
 </style>
 </body>
 </html>
