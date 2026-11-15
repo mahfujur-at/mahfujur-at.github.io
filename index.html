@@ -1578,7 +1578,7 @@ function render(){
   var ips={};v.forEach(function(x){if(x.ip)ips[x.ip]=1});
   var today=new Date();today.setHours(0,0,0,0);
   var todayN=v.filter(function(x){var d=ts(x.time);return d&&d>=today}).length;
-  var stats=[["eye","Total visits",D.vTotal!=null?D.vTotal:v.length],["users","Unique visitors",Object.keys(ips).length],["calendar","Today",todayN],["file","CV / file downloads",D.dTotal!=null?D.dTotal:dl.length]];
+  var stats=[["eye","Total visits",D.vTotal!=null?D.vTotal:v.length],["users","Unique",Object.keys(ips).length],["calendar","Today",todayN],["file","Downloads",D.dTotal!=null?D.dTotal:dl.length]];
   ov.querySelector("#admStats").innerHTML=stats.map(function(t){return '<div class="admStat"><small>'+ico(t[0])+' '+t[1]+'</small><b>'+t[2]+'</b></div>'}).join("");
   var devD=tally(v,function(x){return devOf(x.ua)}),brD=tally(v,function(x){return brOf(x.ua)}),coD=tally(v,function(x){return countryOf(x.loc)}),flD=tally(dl,function(x){return fileOf(x.file)});
   var topShare=function(arr,tot){return arr.length?pct(arr[0].n,tot):0};
@@ -1663,5 +1663,23 @@ document.addEventListener("click",function(e){
  });
 });
 })();</script>
+<style>
+.lg-adm .admHead{position:sticky;padding-top:10px}
+.lg-adm .admIc,.lg-adm.dash .admIc{display:block;position:absolute;left:4px;top:10px;width:40px;height:40px;margin:0;box-shadow:0 6px 14px rgba(10,122,255,.3)}
+.lg-adm .admHead h1{text-align:center;margin:0 48px 2px;font-size:20px}
+@media(min-width:900px){.lg-adm .admHead h1{font-size:30px;margin:0 0 4px}.lg-adm .admSub{font-size:16px}}
+.lg-adm .admSub,.lg-adm.dash .admSub{text-align:center;margin:0 0 10px;font-size:14px}
+.lg-adm .admStats{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.lg-adm .admStat{padding:8px 6px;border-radius:14px;min-width:0}
+.lg-adm .admStat b{font-size:18px;margin-top:0}
+.lg-adm .admStat small{display:block;font-size:10px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-adm .admStat small .ico{display:none}
+.lg-adm .admIc,.lg-adm.dash .admIc{display:none}
+.lg-adm .admStat{padding:10px 4px;text-align:center}
+.lg-adm .admStat b{font-size:20px}
+.lg-adm .admStat small{font-size:11px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2}
+.lg-adm .admStat small .ico{display:block;width:32px;height:32px;margin:0 auto 6px;padding:8px;box-sizing:border-box;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;box-shadow:0 6px 14px rgba(59,130,246,.3)}
+@media(min-width:900px){.lg-adm .admStat{padding:18px 14px}.lg-adm .admStat b{font-size:32px}.lg-adm .admStat small{font-size:14px}.lg-adm .admStat small .ico{width:40px;height:40px;padding:10px;margin:0 auto 10px;border-radius:14px}.lg-adm .admStats{gap:12px}}
+</style>
 </body>
 </html>
