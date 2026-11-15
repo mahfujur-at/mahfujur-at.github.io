@@ -1352,7 +1352,7 @@ window.dispatchEvent(new Event("fbready"));
 (function(){
 function log(){try{window.__ipLookup().then(function(j){
  var ip=j&&j.ip||"",loc=j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"";
- window.__fb.logVisit(ip,loc,navigator.userAgent,location.pathname,document.referrer);
+ window.__fb.logVisit(ip,loc,navigator.userAgent,location.pathname,(new URLSearchParams(location.search).get("src")||document.referrer));
  window.__fb.bumpViews()
 })}catch(e){}}
 if(window.__fb)log();else window.addEventListener("fbready",log,{once:true})
@@ -1553,7 +1553,8 @@ ready(function(){
  function brOf(ua){return uaInfo(ua).split(" · ")[1]||""}
  function countryOf(loc){if(!loc)return"";var p=loc.split(", ");return p[p.length-1]}
  function fileOf(f){return String(f||"").split("/").pop()||"Unknown"}
-function srcOf(ref){if(ref===undefined)return "Unknown";if(!ref)return "Direct";var h="";try{h=new URL(ref).hostname.toLowerCase()}catch(e){return "Other"}
+var SRCN={github:"GitHub",linkedin:"LinkedIn",facebook:"Facebook",fb:"Facebook",google:"Google",whatsapp:"WhatsApp",instagram:"Instagram",twitter:"X / Twitter",x:"X / Twitter",youtube:"YouTube",telegram:"Telegram"};
+function srcOf(ref){if(ref===undefined)return "Unknown";if(!ref)return "Direct";if(ref.indexOf("http")!==0){var k=String(ref).toLowerCase();return SRCN[k]||(k.charAt(0).toUpperCase()+k.slice(1))}var h="";try{h=new URL(ref).hostname.toLowerCase()}catch(e){return "Other"}
  if(h.indexOf("mahfujur.at")>-1)return "Own site";if(h.indexOf("github")>-1)return "GitHub";if(h.indexOf("linkedin")>-1)return "LinkedIn";if(h.indexOf("facebook")>-1||h.indexOf("fb.")===0||h.indexOf("fb.com")>-1)return "Facebook";if(h.indexOf("google")>-1)return "Google";if(h.indexOf("whatsapp")>-1||h.indexOf("wa.me")>-1)return "WhatsApp";if(h.indexOf("instagram")>-1)return "Instagram";if(h.indexOf("twitter")>-1||h.indexOf("t.co")===0||h.indexOf("x.com")>-1)return "X / Twitter";if(h.indexOf("bing")>-1)return "Bing";return h}
  function row(main,subs){return '<div class="admRow">'+main+'<small>'+subs.filter(Boolean).map(E).join(" · ")+'</small></div>'}
  function bars(rows,tot){return rows.map(function(r){var p=pct(r.n,tot);return '<div class="admBar"><div class="admBarTop"><span>'+E(r.name)+'</span><span>'+r.n+' · '+p+'%</span></div><div class="admBarTrack"><div class="admBarFill" style="width:'+p+'%"></div></div></div>'}).join("")||'<p class="admEmpty">No data yet</p>'}
@@ -1698,6 +1699,13 @@ document.addEventListener("click",function(e){
 @media(min-width:900px){.lg-adm .admStats .admStat small .ico{width:28px;height:28px;flex-basis:28px;padding:6px}.lg-adm .admStats .admStat b{font-size:20px}}
 @media(min-width:900px){.lg-adm .admStat{padding:8px 8px}.lg-adm .admStat b{font-size:20px}.lg-adm .admStat small{font-size:12px}.lg-adm .admStat small .ico{width:26px;height:26px;padding:6px;margin:0 auto 4px;border-radius:10px}.lg-adm .admStats{gap:8px}}
 
+</style>
+<style>
+@media(min-width:600px){.lg-adm .admSplit{grid-template-columns:280px minmax(0,1fr)}.lg-adm .admCatVal{min-width:64px;max-width:100px;text-align:right;font-size:14px;white-space:normal;line-height:1.1}.lg-adm .admCatTxt b{font-size:14px}}
+@media(min-width:900px){.lg-adm .admSplit{grid-template-columns:300px minmax(0,1fr)}.lg-adm .admRing{width:46px;height:46px}.lg-adm .admRing b{width:34px;height:34px;font-size:11px}}
+@media(max-width:599px){.lg-adm .admCatVal{white-space:normal;line-height:1.15;font-size:14px}.lg-adm .admCatTxt b{white-space:normal;line-height:1.2}}
+@media(max-width:599px){.lg-adm .admSplit{grid-template-columns:minmax(0,1fr);gap:12px}.lg-adm .admCats{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:static}.lg-adm .admCat{grid-template-columns:auto minmax(0,1fr);gap:4px 8px;padding:10px}.lg-adm .admCatVal{grid-column:1 / 3;text-align:left;font-size:14px}.lg-adm .admMain{min-width:0}}
+@media(max-width:600px){#admQWrap input{width:150px!important;flex-basis:150px!important}.lg-adm .admStats .admStat{flex-direction:column;gap:3px;padding:6px 2px}.lg-adm .admStats .admStat small{justify-content:center}}
 </style>
 </body>
 </html>
