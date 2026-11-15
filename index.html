@@ -1553,6 +1553,8 @@ ready(function(){
  function brOf(ua){return uaInfo(ua).split(" · ")[1]||""}
  function countryOf(loc){if(!loc)return"";var p=loc.split(", ");return p[p.length-1]}
  function fileOf(f){return String(f||"").split("/").pop()||"Unknown"}
+function srcOf(ref){if(ref===undefined)return "Unknown";if(!ref)return "Direct";var h="";try{h=new URL(ref).hostname.toLowerCase()}catch(e){return "Other"}
+ if(h.indexOf("mahfujur.at")>-1)return "Own site";if(h.indexOf("github")>-1)return "GitHub";if(h.indexOf("linkedin")>-1)return "LinkedIn";if(h.indexOf("facebook")>-1||h.indexOf("fb.")===0||h.indexOf("fb.com")>-1)return "Facebook";if(h.indexOf("google")>-1)return "Google";if(h.indexOf("whatsapp")>-1||h.indexOf("wa.me")>-1)return "WhatsApp";if(h.indexOf("instagram")>-1)return "Instagram";if(h.indexOf("twitter")>-1||h.indexOf("t.co")===0||h.indexOf("x.com")>-1)return "X / Twitter";if(h.indexOf("bing")>-1)return "Bing";return h}
  function row(main,subs){return '<div class="admRow">'+main+'<small>'+subs.filter(Boolean).map(E).join(" · ")+'</small></div>'}
  function bars(rows,tot){return rows.map(function(r){var p=pct(r.n,tot);return '<div class="admBar"><div class="admBarTop"><span>'+E(r.name)+'</span><span>'+r.n+' · '+p+'%</span></div><div class="admBarTrack"><div class="admBarFill" style="width:'+p+'%"></div></div></div>'}).join("")||'<p class="admEmpty">No data yet</p>'}
  function donut(rows,tot){if(!rows.length)return '<p class="admEmpty">No data yet</p>';var cols=['#6c5cff','#38bdf8','#f59e0b','#22c55e','#ef4444','#a855f7'];var acc=0;var seg=rows.map(function(r,i){var a=acc,b=acc+pct(r.n,tot);acc=b;return cols[i%cols.length]+' '+a+'% '+b+'%'}).join(',');return '<div class="admDonutWrap"><div class="admDonut" style="background:conic-gradient('+seg+')"></div><div class="admLegend">'+rows.map(function(r,i){return '<div><i style="background:'+cols[i%cols.length]+'"></i>'+E(r.name)+' <b>'+pct(r.n,tot)+'%</b></div>'}).join('')+'</div></div>'}
@@ -1561,7 +1563,7 @@ ready(function(){
  function ico(n){return '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[n]||"")+'</svg>'}
  var cat="visitors";
 function placeCats(){var hd=ov.querySelector("#admHead"),cs=ov.querySelector(".admCats");if(!hd||!cs)return;cs.style.top=(hd.offsetHeight+12)+"px";}
-function moreBtn(k){var isV=k==="visitors",more=isV?(D.vMore||!D.vLegacyDone):D.dMore,n=isV?D.visits.length:D.downloads.length,tot=isV?D.vTotal:D.dTotal;if(!more)return '<p class="admEmpty">All '+n+' loaded</p>';return '<div class="admMoreWrap"><button type="button" id="admMoreBtn" class="admOut">Load more ('+n+' of '+(tot==null?"?":tot)+')</button></div>'}
+function moreBtn(k){var isV=k==="visitors",more=isV?(D.vMore||(!D.vLegacyDone&&(D.vTotal==null||D.visits.length<D.vTotal))):(D.dMore&&(D.dTotal==null||D.downloads.length<D.dTotal)),n=isV?D.visits.length:D.downloads.length,tot=isV?D.vTotal:D.dTotal;if(!more)return '<p class="admEmpty">All '+n+' loaded</p>';return '<div class="admMoreWrap"><button type="button" id="admMoreBtn" class="admOut">Load more ('+n+' of '+(tot==null?"?":tot)+')</button></div>'}
 function resHtml(k){var items=D.qRes;if(items==null)return "";if(!items.length)return '<p class="admEmpty">Nothing found</p>';return items.map(function(x){return k==="downloads"?row('<b>'+E(fileOf(x.file))+'</b>',[fmt(x.time),x.ip,x.loc,uaInfo(x.ua)]):row('<b>'+E(x.path||"/")+'</b>',[fmt(x.time),x.ip,x.loc,uaInfo(x.ua)])}).join("")}
 function infoTxt(){return D.qRes==null?"":"Found: "+D.qRes.length+(D.qIsIp?" (by IP, all data)":" (in loaded data)")}
 function searchBox(k){return '<div class="admSearch"><input id="admQ" type="search" autocomplete="off" placeholder="Search IP or any word" value="'+E(D.q||"")+'"><small id="admQInfo">'+infoTxt()+'</small><div id="admQRes">'+resHtml(k)+'</div></div>'}
@@ -1585,11 +1587,13 @@ function render(){
   ov.querySelector("#admStats").innerHTML=stats.map(function(t){return '<div class="admStat"><small>'+ico(t[0])+' '+t[1]+'</small><b>'+t[2]+'</b></div>'}).join("");
   var devD=tally(v,function(x){return devOf(x.ua)}),brD=tally(v,function(x){return brOf(x.ua)}),coD=tally(v,function(x){return countryOf(x.loc)}),flD=tally(dl,function(x){return fileOf(x.file)});
   var topShare=function(arr,tot){return arr.length?pct(arr[0].n,tot):0};
+  var coS=tally(v,function(x){return srcOf(x.ref)});
   var cats=[
     ["visitors","users","Visitors",v.length,"Unique "+Object.keys(ips).length,pct(Object.keys(ips).length,v.length)],
     ["devices","monitor","Devices",devD[0]?devD[0].name:"—",devD[0]?pct(devD[0].n,v.length)+"% top":"",topShare(devD,v.length)],
     ["browsers","globe","Browsers",brD[0]?brD[0].name:"—",brD[0]?pct(brD[0].n,v.length)+"% top":"",topShare(brD,v.length)],
     ["locations","pin","Locations",coD[0]?coD[0].name:"—",coD[0]?pct(coD[0].n,v.length)+"% top":"",topShare(coD,v.length)],
+    ["sources","eye","Sources",coS[0]?coS[0].name:"—",coS[0]?pct(coS[0].n,v.length)+"% top":"",topShare(coS,v.length)],
     ["downloads","file","CV / Files",dl.length,"Downloads",pct(dl.length,v.length)],
     ["love","heart","Love Game",g.length,"Games",pct(g.length,v.length)]
   ];
@@ -1614,6 +1618,7 @@ function render(){
   else if(cat==="devices"){title="Devices";body=donut(devD,v.length)+bars(devD,v.length)}
   else if(cat==="browsers"){title="Browsers";body=donut(brD,v.length)+bars(brD,v.length)}
   else if(cat==="locations"){title="Locations (country)";body=bars(coD,v.length)}
+  else if(cat==="sources"){title="Where visitors came from";body=donut(coS,v.length)+bars(coS,v.length)}
   else if(cat==="downloads"){title="CV / file downloads";body=bars(flD,dl.length)+'<h3>Who downloaded</h3>'+dl.map(function(x){return row('<b>'+E(fileOf(x.file))+'</b>',[fmt(x.time),x.ip,x.loc,uaInfo(x.ua)])}).join("")+empty(dl,"No downloads yet")}
   else if(cat==="love"){title="Love Game history";body=g.map(function(it){var extra=[];if(it.phone)extra.push("📱 "+it.phone);if(it.loc)extra.push("📍 "+it.loc);if(it.ip)extra.push("IP: "+it.ip);return '<div class="admRow"><b>'+E(it.from||"Someone")+'</b> → <b>'+E(it.to||"Someone")+'</b> : <span class="yes">YES ❤️</span><small>'+E(fmt(it.time))+(extra.length?" — "+extra.map(E).join(" · "):"")+'</small></div>'}).join("")+empty(g,"No games yet — share your Love Game link!")}
   if(cat==="visitors"||cat==="downloads"){body+=moreBtn(cat)}
@@ -1686,6 +1691,11 @@ document.addEventListener("click",function(e){
 .lg-adm .admStat b{font-size:20px}
 .lg-adm .admStat small{font-size:11px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2}
 .lg-adm .admStat small .ico{display:block;width:32px;height:32px;margin:0 auto 6px;padding:8px;box-sizing:border-box;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;box-shadow:0 6px 14px rgba(59,130,246,.3)}
+.lg-adm .admStats .admStat{display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;border:0;box-shadow:none;padding:4px 0;border-radius:0}
+.lg-adm .admStats .admStat small{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;white-space:nowrap}
+.lg-adm .admStats .admStat small .ico{display:inline-block;width:26px;height:26px;margin:0;padding:6px;border-radius:9px;flex:0 0 26px}
+.lg-adm .admStats .admStat b{font-size:18px;line-height:1}
+@media(min-width:900px){.lg-adm .admStats .admStat small .ico{width:28px;height:28px;flex-basis:28px;padding:6px}.lg-adm .admStats .admStat b{font-size:20px}}
 @media(min-width:900px){.lg-adm .admStat{padding:8px 8px}.lg-adm .admStat b{font-size:20px}.lg-adm .admStat small{font-size:12px}.lg-adm .admStat small .ico{width:26px;height:26px;padding:6px;margin:0 auto 4px;border-radius:10px}.lg-adm .admStats{gap:8px}}
 
 </style>
