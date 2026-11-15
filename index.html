@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline' https://www.gstatic.com; connect-src https://ntfy.sh https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://ipapi.co https://api.ipify.org; form-action 'none'; manifest-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline' https://www.gstatic.com; connect-src https://ntfy.sh https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://ipapi.co https://ipwho.is https://api.ipify.org; form-action 'none'; manifest-src 'self'; base-uri 'none'; object-src 'none'; frame-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Mahfujur Rahman: IT Support Technician and WordPress &amp; Elementor builder from Bangladesh, open to IT Support/Helpdesk work in Ireland.">
 <meta name="theme-color" content="#dfeaff">
@@ -1162,7 +1162,7 @@ function confetti(){if(rm)return;for(var i=0;i<24;i++){(function(){var c=documen
  c.style.left=Math.random()*100+"vw";c.style.fontSize=(14+Math.random()*16)+"px";c.style.animationDelay=Math.random()*1.2+"s";M.appendChild(c);
  setTimeout(function(){c.remove()},4600)})()}}
 yes.addEventListener("click",function(){if(kq&&!sent){sent=true;try{fetch(NT+kq,{method:"POST",body:(to||"Someone")+" said YES",keepalive:true}).catch(function(){})}catch(e){}
- try{if(window.__fb){fetch("https://ipapi.co/json/").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){
+ try{if(window.__fb){window.__ipLookup().then(function(j){
   var ip=j&&j.ip?j.ip:"",loc=j&&(j.city||j.country_name)?[j.city,j.region,j.country_name].filter(Boolean).join(", "):"";
   window.__fb.saveYes(kq,to,from,phq,ip,loc)})}}catch(e){}}
  no.style.display="none";area.style.display="none";sub.style.display="none";fin.hidden=false;
@@ -1348,7 +1348,7 @@ window.__fb={
 };
 window.dispatchEvent(new Event("fbready"));
 </script>
-<script>window.__ipLookup=function(){return fetch("https://ipapi.co/json/").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(j){if(j&&j.ip)return j;return fetch("https://api.ipify.org?format=json").then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(k){return k&&k.ip?{ip:k.ip}:null})})};
+<script>window.__ipLookup=function(){function norm(j){if(!j||!j.ip)return null;return {ip:j.ip,city:j.city||"",region:j.region||"",country_name:j.country_name||j.country||""}}function get(u){return fetch(u).then(function(r){return r.ok?r.json():null}).catch(function(){return null})}return get("https://ipapi.co/json/").then(function(j){if(j&&j.ip&&(j.city||j.country_name))return norm(j);return get("https://ipwho.is/").then(function(w){if(w&&w.success!==false&&w.ip)return norm({ip:w.ip,city:w.city,region:w.region,country:w.country});if(j&&j.ip)return norm(j);return get("https://api.ipify.org?format=json").then(function(k){return k&&k.ip?{ip:k.ip}:null})})})};
 (function(){
 function log(){try{window.__ipLookup().then(function(j){
  var ip=j&&j.ip||"",loc=j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"";
@@ -1652,7 +1652,7 @@ function render(){
    D.downloads=pd?pd.items:[];D.dCur=pd?pd.cursor:null;D.dMore=pd?pd.more:false;
    D.games=r[3]||[];D.vTotal=r[4];D.dTotal=r[5];
    var bad=[];if(!pv)bad.push("visits");if(!pd)bad.push("downloads");if(!r[3])bad.push("love games");
-   sub.textContent="Total views: "+D.views+(bad.length?" · Could not load "+bad.join(", ")+" (check Firestore rules)":"");
+   sub.textContent=bad.length?"Could not load "+bad.join(", ")+" (check Firestore rules)":"";
    render();
   });
  }
@@ -1706,6 +1706,19 @@ document.addEventListener("click",function(e){
 @media(max-width:599px){.lg-adm .admCatVal{white-space:normal;line-height:1.15;font-size:14px}.lg-adm .admCatTxt b{white-space:normal;line-height:1.2}}
 @media(max-width:599px){.lg-adm .admSplit{grid-template-columns:minmax(0,1fr);gap:12px}.lg-adm .admCats{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:static}.lg-adm .admCat{grid-template-columns:auto minmax(0,1fr);gap:4px 8px;padding:10px}.lg-adm .admCatVal{grid-column:1 / 3;text-align:left;font-size:14px}.lg-adm .admMain{min-width:0}}
 @media(max-width:600px){#admQWrap input{width:150px!important;flex-basis:150px!important}.lg-adm .admStats .admStat{flex-direction:column;gap:3px;padding:6px 2px}.lg-adm .admStats .admStat small{justify-content:center}}
+</style>
+<style>
+/* category strip: all 7 categories on top, details below (final override) */
+.lg-adm .admSplit{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+.lg-adm .admCats{position:sticky!important;top:0;z-index:5;align-self:start;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;gap:8px!important;padding:8px 0 10px!important;margin:0!important;background:rgba(246,248,252,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+@media(min-width:600px) and (max-width:1023px){.lg-adm .admCats{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+.lg-adm .admCat{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;grid-template-rows:auto auto;gap:2px 6px!important;align-items:center;padding:10px!important;min-width:0}
+.lg-adm .admRing{width:40px!important;height:40px!important;grid-column:3;grid-row:1 / 3}.lg-adm .admRing b{width:30px!important;height:30px!important;font-size:10px!important}
+.lg-adm .admCatIc{grid-column:1;grid-row:1 / 3}
+.lg-adm .admCatTxt{grid-column:2;grid-row:1;min-width:0}
+.lg-adm .admCatVal{grid-column:2!important;grid-row:2;justify-self:start;text-align:left;font-size:14px!important;max-width:100%;min-width:0;white-space:normal;line-height:1.15;overflow:hidden}
+.lg-adm .admCatBar{display:none}
+@media(max-width:599px){.lg-adm .admCats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:6px 0 8px!important}.lg-adm .admCat{grid-template-columns:auto minmax(0,1fr)!important;padding:8px!important}.lg-adm .admRing{display:none}.lg-adm .admCatTxt small{display:none}}
 </style>
 </body>
 </html>
