@@ -1575,7 +1575,7 @@ function runSearch(k){var q=(D.q||"").trim(),info=ov.querySelector("#admQInfo"),
  D.qIsIp=false;var src=k==="downloads"?D.downloads:D.visits,ql=q.toLowerCase();D.qRes=src.filter(function(x){return JSON.stringify(x).toLowerCase().indexOf(ql)>-1});
  if(info)info.textContent=infoTxt();if(res)res.innerHTML=resHtml(k)}
 function sk(c){return c==="downloads"?"downloads":"visitors"}
-function ensureSearch(){var top=ov.querySelector("#admTop");if(!top||ov.querySelector("#admQWrap"))return;var out=ov.querySelector("#admOut");var ic=ov.querySelector("#admHead .admIc");if(ic)top.insertBefore(ic,out||top.firstChild);if(out&&ic){ic.appendChild(out)}if(out)out.style.display="none";if(ic){ic.style.cursor="pointer";ic.title="Sign out";ic.addEventListener("click",function(){var o=ov.querySelector("#admOut");if(o)o.style.display=o.style.display==="none"?"":"none"})}var w=document.createElement("div");w.id="admQWrap";w.className="admSearch";w.innerHTML='<input id="admQ" type="search" autocomplete="off" placeholder="Search IP or any word" value="'+E(D.q||"")+'"><small id="admQInfo">'+infoTxt()+'</small>';top.insertBefore(w,top.querySelector("#admStats")||null);var sb=ov.querySelector("#admSub");if(sb)w.appendChild(sb);var qi=w.querySelector("#admQ"),qt=null;qi.addEventListener("input",function(){D.q=qi.value;clearTimeout(qt);qt=setTimeout(function(){runSearch(sk(cat))},350)})}
+function ensureSearch(){var top=ov.querySelector("#admTop");if(!top||ov.querySelector("#admQWrap"))return;var out=ov.querySelector("#admOut");var ic=ov.querySelector("#admHead .admIc");if(ic)top.insertBefore(ic,out||top.firstChild);if(out&&ic){ic.appendChild(out)}if(out)out.style.display="none";if(ic){ic.style.cursor="pointer";ic.title="Sign out";ic.addEventListener("click",function(){var o=ov.querySelector("#admOut");if(o)o.style.display=o.style.display==="none"?"":"none"})}var w=document.createElement("div");w.id="admQWrap";w.className="admSearch";w.innerHTML='<input id="admQ" type="search" autocomplete="off" placeholder="Search IP or any word" value="'+E(D.q||"")+'"><small id="admQInfo">'+infoTxt()+'</small>';(ov.querySelector("#admStats")||top).appendChild(w);var sb=ov.querySelector("#admSub");if(sb)w.appendChild(sb);var qi=w.querySelector("#admQ"),qt=null;qi.addEventListener("input",function(){D.q=qi.value;clearTimeout(qt);qt=setTimeout(function(){runSearch(sk(cat))},350)})}
 function loadMore(k){var b=detail.querySelector("#admMoreBtn");if(b){b.disabled=true;b.textContent="Loading…"}var isV=k==="visitors";
  if(isV&&!D.vMore){window.__fb.pageNoTime(D.vLegacyCur).then(function(r){D.visits=D.visits.concat(r.items);D.vLegacyCur=r.cursor;D.vLegacyDone=!r.more;render()}).catch(function(){var c=detail.querySelector("#admMoreBtn");if(c){c.disabled=false;c.textContent="Could not load, try again"}});return}
  window.__fb.pageOf(isV?"visits":"downloads",isV?D.vCur:D.dCur).then(function(r){if(isV){D.visits=D.visits.concat(r.items);D.vCur=r.cursor;D.vMore=r.more}else{D.downloads=D.downloads.concat(r.items);D.dCur=r.cursor;D.dMore=r.more}render()}).catch(function(){var c=detail.querySelector("#admMoreBtn");if(c){c.disabled=false;c.textContent="Could not load, try again"}})}
@@ -1584,8 +1584,9 @@ function render(){
   var ips={};v.forEach(function(x){if(x.ip)ips[x.ip]=1});
   var today=new Date();today.setHours(0,0,0,0);
   var todayN=v.filter(function(x){var d=ts(x.time);return d&&d>=today}).length;
-  var stats=[["eye","Total visits",D.vTotal!=null?D.vTotal:v.length],["users","Unique",Object.keys(ips).length],["calendar","Today",todayN],["file","Downloads",D.dTotal!=null?D.dTotal:dl.length]];
+  var stats=[["eye","Total visits",D.vTotal!=null?D.vTotal:v.length],["users","Unique",Object.keys(ips).length],["calendar","Today",todayN]];
   ov.querySelector("#admStats").innerHTML=stats.map(function(t){return '<div class="admStat"><small>'+ico(t[0])+' '+t[1]+'</small><b>'+t[2]+'</b></div>'}).join("");
+  var qwMove=ov.querySelector("#admQWrap"),stEl=ov.querySelector("#admStats");if(qwMove&&stEl)stEl.appendChild(qwMove);
   var devD=tally(v,function(x){return devOf(x.ua)}),brD=tally(v,function(x){return brOf(x.ua)}),coD=tally(v,function(x){return countryOf(x.loc)}),flD=tally(dl,function(x){return fileOf(x.file)});
   var topShare=function(arr,tot){return arr.length?pct(arr[0].n,tot):0};
   var coS=tally(v,function(x){return srcOf(x.ref)});
@@ -1723,6 +1724,19 @@ document.addEventListener("click",function(e){
 .lg-adm .admCats{padding-top:0!important;margin-top:0!important}
 .lg-adm #admGrid{margin-bottom:0!important;height:6px}
 .lg-adm .admHead{padding-bottom:0!important}
+</style>
+<style>
+/* search box sits in the stats row, where Downloads used to be */
+#admStats #admQWrap{grid-column:auto!important;justify-self:stretch!important;justify-content:stretch!important;width:100%!important;max-width:none!important;margin:0!important;grid-column:auto}
+#admStats #admQWrap input{width:100%!important;max-width:none!important;flex:1 1 auto!important;min-width:0!important;height:36px!important}
+#admStats #admQWrap #admSub{display:none!important}
+/* logo sits on the same line as the stats row, left of Total visits */
+#admTop{grid-template-columns:44px minmax(0,1fr)!important;align-items:center!important}
+#admTop .admIc{grid-column:1!important;grid-row:1!important;align-self:center!important;justify-self:start!important;position:relative!important;top:auto!important;left:auto!important;width:36px!important;height:36px!important}
+#admTop #admStats{grid-column:2!important;grid-row:1!important;margin:0!important}
+@media(max-width:599px){#admTop{grid-template-columns:40px minmax(0,1fr)!important}}
+@media(max-width:599px){#admStats #admQWrap{grid-column:1 / -1!important;order:9}#admStats #admQWrap input{height:38px!important;font-size:14px!important}}
+#admStats #admQWrap #admQInfo{display:none!important}
 </style>
 </body>
 </html>
