@@ -1081,9 +1081,9 @@ nav.nv .nv-ov a{color:#fff!important;background:none!important;box-shadow:none!i
 
 
 /* Footer: one row on desktop (name | icons | copyright), stacked on phone */
-footer{display:grid;grid-template-columns:34.5% auto 1fr;align-items:center;gap:12px;padding-inline:18px}
+footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding-inline:18px}footer>span:last-child{justify-self:end;text-align:right}
 .footbrand{position:static;transform:none;margin:0;justify-self:start;font-weight:800;font-size:22px;letter-spacing:-.03em;white-space:nowrap;background:linear-gradient(120deg,var(--text) 30%,var(--accent) 70%,var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
-.footicons{position:relative;top:6px;margin:0 auto;align-self:center;line-height:0}
+.footicons{position:relative;top:6px;margin:0;justify-self:center;align-self:center;line-height:0}
 @media(max-width:700px){footer{display:block;text-align:center}.footbrand{display:block;width:100%;margin:0 0 10px;text-align:center}}
 
 
