@@ -1833,7 +1833,7 @@ setTimeout(function(){sync(false);re()},300);setTimeout(function(){sync(false);i
 })();
 ;
 /* --- script 26 --- */
-window.__ipLookup=function(){function norm(j){if(!j||!j.ip)return null;return {ip:j.ip,city:j.city||"",region:j.region||"",country_name:j.country_name||j.country||""}}function get(u){return fetch(u).then(function(r){return r.ok?r.json():null}).catch(function(){return null})}return get("https://ipapi.co/json/").then(function(j){if(j&&j.ip&&(j.city||j.country_name))return norm(j);return get("https://ipwho.is/").then(function(w){if(w&&w.success!==false&&w.ip)return norm({ip:w.ip,city:w.city,region:w.region,country:w.country});if(j&&j.ip)return norm(j);return get("https://api.ipify.org?format=json").then(function(k){return k&&k.ip?{ip:k.ip}:null})})})};
+window.__ipLookup=function(){if(window.__ipP)return window.__ipP;return window.__ipP=window.__ipLookup0()};window.__ipLookup0=function(){function norm(j){if(!j||!j.ip)return null;return {ip:j.ip,city:j.city||"",region:j.region||"",country_name:j.country_name||j.country||""}}function get(u){return fetch(u).then(function(r){return r.ok?r.json():null}).catch(function(){return null})}return get("https://ipapi.co/json/").then(function(j){if(j&&j.ip&&(j.city||j.country_name))return norm(j);return get("https://ipwho.is/").then(function(w){if(w&&w.success!==false&&w.ip)return norm({ip:w.ip,city:w.city,region:w.region,country:w.country});if(j&&j.ip)return norm(j);return get("https://api.ipify.org?format=json").then(function(k){return k&&k.ip?{ip:k.ip}:null})})})};
 (function(){
 function log(){try{window.__ipLookup().then(function(j){
  var ip=j&&j.ip||"",loc=j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"";
@@ -1841,6 +1841,44 @@ function log(){try{window.__ipLookup().then(function(j){
  window.__fb.bumpViews()
 })}catch(e){}}
 if(window.__fb)log();else window.addEventListener("fbready",log,{once:true})
+})();
+;
+(function(){
+if(new URLSearchParams(location.search).get("knight")==="1")return;
+function rnd(){var a=new Uint8Array(12);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(x){return("0"+x.toString(16)).slice(-2)}).join("")}
+function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k);sessionStorage.setItem(k,v)}catch(e){return null}}
+function start(){
+ var fb=window.__fb;if(!fb||!fb.sessStart||window.__trk)return;window.__trk=1;
+ var sid=ss("wsid"),isNew=!sid;if(isNew){sid=rnd();ss("wsid",sid)}
+ var qs=new URLSearchParams(location.search),trail=[],perf={},active=Number(ss("wact"))||0,mark=Date.now(),pings=0,MAXP=40,lastSent="";
+ try{trail=JSON.parse(ss("wtr")||"[]").slice(0,30)}catch(e){trail=[]}
+ function tick(){var n=Date.now();if(document.visibilityState==="visible")active+=n-mark;mark=n;ss("wact",String(active))}
+ function seen(id){if(trail[trail.length-1]===id||trail.length>=30)return;trail.push(id);ss("wtr",JSON.stringify(trail))}
+ try{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&e.target.id)seen(e.target.id)})},{threshold:.4});document.querySelectorAll("section[id]").forEach(function(s){io.observe(s)})}catch(e){}
+ function body(){tick();var d={dur:Math.min(86399,Math.round(active/1000)),trail:trail.slice(0,30)};for(var k in perf)d[k]=perf[k];return d}
+ function send(){var d=body(),sig=JSON.stringify(d);if(sig===lastSent&&document.visibilityState!=="visible")return;lastSent=sig;fb.sessPing(sid,d)}
+ function perfRead(){try{var n=performance.getEntriesByType("navigation")[0];if(n){perf.ttfb=Math.round(n.responseStart);perf.load=Math.round(n.loadEventEnd||n.duration)}var f=performance.getEntriesByName("first-contentful-paint")[0];if(f)perf.fcp=Math.round(f.startTime)}catch(e){}}
+ try{new PerformanceObserver(function(l){var e=l.getEntries();if(e.length)perf.lcp=Math.round(e[e.length-1].startTime)}).observe({type:"largest-contentful-paint",buffered:true})}catch(e){}
+ try{var cls=0;new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)cls+=e.value});perf.cls=Math.round(cls*1000)/1000}).observe({type:"layout-shift",buffered:true})}catch(e){}
+ function create(ip,loc){
+  var ref=qs.get("src")||document.referrer||"";
+  var d={ip:ip||"",loc:loc||"",ua:navigator.userAgent.slice(0,300),ref:ref.slice(0,300),src:(qs.get("utm_source")||"").slice(0,60),med:(qs.get("utm_medium")||"").slice(0,60),cmp:(qs.get("utm_campaign")||"").slice(0,80),path:location.pathname.slice(0,100),w:screen.width||0,lang:(navigator.language||"").slice(0,12),dur:0,trail:trail.slice(0,30)};
+  fb.sessStart(sid,d)}
+ function after(){
+  if(isNew){(window.__ipLookup?window.__ipLookup():Promise.resolve(null)).then(function(j){create(j&&j.ip||"",j&&(j.city||j.country_name)?[j.city,j.country_name].filter(Boolean).join(", "):"")}).catch(function(){create("","")})}
+  setTimeout(function(){perfRead();send()},isNew?2500:800);
+  var iv=setInterval(function(){if(document.visibilityState!=="visible")return;if(++pings>MAXP){clearInterval(iv);return}send()},30000);
+ }
+ if(document.readyState==="complete")after();else window.addEventListener("load",after,{once:true});
+ document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")send();else mark=Date.now()});
+ window.addEventListener("pagehide",send);
+ /* errors */
+ var ec=0,es={};
+ function rep(m,s,l){if(ec>=5||!m)return;m=String(m).slice(0,300);if(es[m])return;es[m]=1;ec++;fb.logError({msg:m,src:String(s||"").slice(0,200),line:Number(l)||0,path:location.pathname.slice(0,100),ua:navigator.userAgent.slice(0,300),sid:sid})}
+ window.addEventListener("error",function(e){if(e.target&&e.target!==window&&e.target.tagName){rep("Failed to load <"+e.target.tagName.toLowerCase()+"> "+(e.target.src||e.target.href||""),"",0)}else rep(e.message,e.filename,e.lineno)},true);
+ window.addEventListener("unhandledrejection",function(e){rep("Unhandled promise: "+(e.reason&&e.reason.message||e.reason||""),"",0)});
+}
+if(window.__fb)start();else window.addEventListener("fbready",start,{once:true})
 })();
 ;
 /* --- script 27 --- Website Intelligence dashboard (opens with ?knight=1, needs your login) */
@@ -1889,16 +1927,17 @@ var NAV=[["OVERVIEW",[["overview","Overview","overview"],["live","Live Visitors"
  ["PERFORMANCE",[["perf","Website Performance","bolt"],["vitals","Web Vitals","bolt"],["errors","Errors","warn"]]],
  ["SECURITY",[["alerts","Traffic Alerts","shield"],["susp","Suspicious Activity","shield"]]],
  ["SYSTEM",[["love","Love Game","heart"],["settings","Settings","gear"],["privacy","Privacy","shield"]]]];
-var READY={overview:1,visitors:1,geo:1,pages:1,events:1,downloads:1,sources:1,devices:1,browsers:1,os:1,love:1};
-var NEEDS_TRACK={live:1,activity:1,sessions:1,journey:1,conv:1,refs:1,utm:1,perf:1,vitals:1,errors:1,alerts:1,susp:1};
-var TITLES={overview:["Overview","Everything about your website in one place"],visitors:["Visitors","Every visit, with IP and approximate location"],geo:["Geography","Approximate location of visitors (from IP, never exact)"],pages:["Pages","Which pages people open"],events:["Events","Clicks on your GitHub, LinkedIn, Facebook and WhatsApp icons"],downloads:["Downloads","Files people downloaded"],sources:["Traffic Sources","Where your visitors come from"],devices:["Devices","What visitors use"],browsers:["Browsers","Which browsers visitors use"],os:["Operating Systems","Which systems visitors use"],love:["Love Game","History of the Love Game"]};
+var READY={overview:1,live:1,activity:1,visitors:1,sessions:1,journey:1,geo:1,pages:1,events:1,downloads:1,conv:1,sources:1,refs:1,utm:1,devices:1,browsers:1,os:1,perf:1,vitals:1,errors:1,alerts:1,susp:1,love:1,settings:1,privacy:1};
+var NEEDS_TRACK={};
+var TITLES={live:["Live Visitors","People on the site right now"],activity:["Real-time Activity","Everything happening, newest first"],sessions:["Sessions","How long people stay and what they look at"],journey:["Visitor Journey","Which sections people view, in order"],conv:["Conversions","From visit to download or contact"],refs:["Referrals","Websites that sent visitors"],utm:["Campaigns / UTM","Visitors from tagged links"],perf:["Website Performance","How fast the site is for real visitors"],vitals:["Web Vitals","Google's speed and stability scores"],errors:["Errors","Problems visitors ran into"],alerts:["Traffic Alerts","Unusual things worth knowing"],susp:["Suspicious Activity","IPs and browsers worth a look"],settings:["Settings","Dashboard preferences"],privacy:["Privacy","What is recorded and who can see it"],overview:["Overview","Everything about your website in one place"],visitors:["Visitors","Every visit, with IP and approximate location"],geo:["Geography","Approximate location of visitors (from IP, never exact)"],pages:["Pages","Which pages people open"],events:["Events","Clicks on your GitHub, LinkedIn, Facebook and WhatsApp icons"],downloads:["Downloads","Files people downloaded"],sources:["Traffic Sources","Where your visitors come from"],devices:["Devices","What visitors use"],browsers:["Browsers","Which browsers visitors use"],os:["Operating Systems","Which systems visitors use"],love:["Love Game","History of the Love Game"]};
 
 /* ---------- state ---------- */
-var D={visits:[],downloads:[],games:[],clicks:[],views:0,vCur:null,dCur:null,vMore:false,dMore:false,vTotal:null,dTotal:null,vLegacyCur:null,vLegacyDone:false,warn:"",loading:false};
-var S={page:"overview",range:30,metric:"visits",q:"",qRes:null,qIsIp:false,qInfo:"",menu:false};
+var D={visits:[],downloads:[],games:[],clicks:[],sess:[],errors:[],live:null,liveErr:false,sessErr:false,errErr:false,sCur:null,sMore:false,views:0,vCur:null,dCur:null,vMore:false,dMore:false,vTotal:null,dTotal:null,vLegacyCur:null,vLegacyDone:false,warn:"",loading:false};
+var S={page:"overview",range:(function(){try{var r=+localStorage.getItem("wi-range");return[1,7,30,90].indexOf(r)>-1?r:30}catch(e){return 30}})(),metric:"visits",q:"",qRes:null,qIsIp:false,qInfo:"",menu:false};
 var view,sideEl,loaded=false;
 
 /* ---------- ranges ---------- */
+function addT(s){s.time=s.first;return s}
 function span(){var now=Date.now(),a;if(S.range===1){var d=new Date();d.setHours(0,0,0,0);a=d.getTime();return{a:a,b:now+1,pa:a-864e5,pb:a}}a=now-S.range*864e5;return{a:a,b:now+1,pa:a-S.range*864e5,pb:a}}
 function inR(arr,lo,hi){return arr.filter(function(x){var m=tsMs(x.time);return m!=null&&m>=lo&&m<hi})}
 function dayKey(ms){var d=new Date(ms);return d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()}
@@ -1963,15 +2002,98 @@ function vOverview(){
   '<div class="card"><h3>Icon clicks</h3>'+rows(tally(cc,function(v){return v.target}),cc.length,6)+'</div></div></div>'}
 
 function searchHtml(k){return'<div class="searchbar"><input id="wq" type="search" autocomplete="off" placeholder="Search by IP (all data) or any word (loaded data)" value="'+E(S.q)+'"><span id="wqi" class="wmute">'+E(S.qInfo)+'</span></div>'}
-function visitRow(v){return'<div class="vrow"><div class="a"><b>'+E(v.ip||"—")+'</b><small>'+E(when(v.time))+'</small></div><div class="b">'+E(v.loc||"Location unknown")+'<small>'+E([devName(v.ua),brName(v.ua),osName(v.ua)].filter(Boolean).join(" · "))+'</small></div><div class="c">'+E(v.path||"/")+'<small>from '+E(srcOf(v.ref))+'</small></div></div>'}
-function dlRow(v){return'<div class="vrow"><div class="a"><b>'+E(v.ip||"—")+'</b><small>'+E(when(v.time))+'</small></div><div class="b">'+E(v.loc||"Location unknown")+'<small>'+E([devName(v.ua),brName(v.ua)].filter(Boolean).join(" · "))+'</small></div><div class="c">'+E(fileOf(v.file))+'</div></div>'}
+function visitRow(v){return'<div class="vrow"><div class="a"><b>'+E(ipv(v.ip))+'</b><small>'+E(when(v.time))+'</small></div><div class="b">'+E(v.loc||"Location unknown")+'<small>'+E([devName(v.ua),brName(v.ua),osName(v.ua)].filter(Boolean).join(" · "))+'</small></div><div class="c">'+E(v.path||"/")+'<small>from '+E(srcOf(v.ref))+'</small></div></div>'}
+function dlRow(v){return'<div class="vrow"><div class="a"><b>'+E(ipv(v.ip))+'</b><small>'+E(when(v.time))+'</small></div><div class="b">'+E(v.loc||"Location unknown")+'<small>'+E([devName(v.ua),brName(v.ua)].filter(Boolean).join(" · "))+'</small></div><div class="c">'+E(fileOf(v.file))+'</div></div>'}
 function moreBtn(k){var isV=k==="visitors",more=isV?(D.vMore||(!D.vLegacyDone&&(D.vTotal==null||D.visits.length<D.vTotal))):(D.dMore&&(D.dTotal==null||D.downloads.length<D.dTotal)),n=isV?D.visits.length:D.downloads.length,tot=isV?D.vTotal:D.dTotal;
  if(!more)return'<p class="wmute" style="text-align:center;margin-top:12px">All '+n+' loaded</p>';return'<div style="text-align:center;margin-top:14px"><button type="button" class="btnp" id="wmore">Load more ('+n+" of "+(tot==null?"?":tot)+")</button></div>"}
 function listPage(k){var isV=k==="visitors",items=S.qRes!=null?S.qRes:(isV?D.visits:D.downloads),fn=isV?visitRow:dlRow;
  return'<div class="page"><div class="card">'+searchHtml(k)+'<div id="wres">'+(items.length?items.slice(0,500).map(fn).join(""):'<p class="wmute">'+(S.qRes!=null?"Nothing found":"No data yet")+'</p>')+'</div>'+(S.qRes==null?moreBtn(k):"")+'</div></div>'}
 function simpleCards(cards){return'<div class="page"><div class="grid g3">'+cards.map(function(c){return'<div class="card"><h3>'+E(c[0])+'</h3>'+c[1]+'</div>'}).join("")+'</div></div>'}
+/* ---------- phase 2: pages that use session / error tracking ---------- */
+var MASK=false;try{MASK=localStorage.getItem("wi-mask")==="1"}catch(e){}
+function ipv(ip){ip=String(ip||"");if(!ip)return"—";if(!MASK)return ip;if(ip.indexOf(":")>-1)return ip.split(":").slice(0,2).join(":")+":…";var p=ip.split(".");return p.length===4?p[0]+"."+p[1]+".x.x":"hidden"}
+function dur(s){s=Math.round(s||0);if(s<60)return s+"s";return Math.floor(s/60)+"m "+("0"+(s%60)).slice(-2)+"s"}
+function secName(id){return({home:"Home",about:"About",work:"Work",check:"Check",milestones:"Milestones",contact:"Contact"})[id]||(id?String(id).charAt(0).toUpperCase()+String(id).slice(1):"—")}
+function med(a){if(!a.length)return null;var s=a.slice().sort(function(x,y){return x-y});return s[Math.floor((s.length-1)/2)]}
+function p75(a){if(!a.length)return null;var s=a.slice().sort(function(x,y){return x-y});return s[Math.min(s.length-1,Math.ceil(s.length*.75)-1)]}
+function nums(arr,k){return arr.map(function(x){return x[k]}).filter(function(x){return typeof x==="number"&&isFinite(x)})}
+function avg(a){return a.length?a.reduce(function(s,x){return s+x},0)/a.length:null}
+function ms(v){return v==null?"—":v>=1000?(v/1000).toFixed(2)+" s":Math.round(v)+" ms"}
+function sessR(){var sp=span();return inR(D.sess,sp.a,sp.b)}
+function sessPrev(){var sp=span();return inR(D.sess,sp.pa,sp.pb)}
+function sessRow(s,useLast){var tr=(s.trail||[]).map(secName);return'<div class="vrow"><div class="a"><b>'+E(ipv(s.ip))+'</b><small>'+E(useLast?"active "+ago(s.last):when(s.first))+'</small></div><div class="b">'+E(s.loc||"Location unknown")+'<small>'+E([devName(s.ua),brName(s.ua),osName(s.ua)].filter(Boolean).join(" · "))+'</small></div><div class="c">'+E(dur(s.dur))+' on site · '+tr.length+' section'+(tr.length===1?"":"s")+'<small>'+E(tr.join(" → ")||"no section viewed")+(s.src||s.ref?" · from "+E(s.src||srcOf(s.ref)):"")+'</small></div></div>'}
+function groupMed(arr,keyfn,field){var g={};arr.forEach(function(s){if(typeof s[field]!=="number")return;var k=keyfn(s)||"Unknown";(g[k]=g[k]||[]).push(s[field])});return Object.keys(g).map(function(k){return[k,med(g[k]),g[k].length]}).sort(function(a,b){return b[2]-a[2]})}
+function medList(l){return l.length?l.slice(0,8).map(function(r){return'<div class="row"><span class="n">'+E(r[0])+'</span><span class="c">'+E(ms(r[1]))+'</span><span class="p">'+r[2]+'</span></div>'}).join(""):'<p class="wmute">No data yet</p>'}
+function vital(name,vals,lo,hi,f){var v=p75(vals),g=0,n=0,b=0;vals.forEach(function(x){if(x<=lo)g++;else if(x<=hi)n++;else b++});var col=v==null?"var(--text)":v<=lo?"var(--up)":v<=hi?"var(--warn)":"var(--down)";return'<div class="card kpi"><div class="l">'+E(name)+' · 75th percentile</div><div class="v" style="color:'+col+'">'+E(v==null?"—":f(v))+'</div><div class="d"><span class="prev">'+vals.length+' samples · good '+g+' · needs work '+n+' · poor '+b+'</span></div></div>'}
+function evRow(a,b,t,sev){return'<div class="ev"><div class="dot">'+(sev==="high"?"▲":sev==="mid"?"●":"✓")+'</div><div><div class="t">'+E(a)+'</div><div class="s">'+E(b)+'</div></div>'+(t?'<time>'+E(t)+'</time>':"")+'</div>'}
+function trackNote(){return D.sessErr?'<p class="wnote">Sessions could not be loaded. Publish the new Firestore rules (sessions + errors) and press Refresh data.</p>':(D.sess.length?"":'<p class="wnote">No sessions recorded yet. They appear after visitors open the updated site.</p>')}
+function hostOf(ref){if(!ref||ref.indexOf("http")!==0)return"";try{return new URL(ref).hostname.replace(/^www\./,"")}catch(e){return""}}
+var BOT=/bot|crawl|spider|headless|curl|wget|python|scrap|lighthouse|preview|facebookexternalhit|slurp/i;
+var PG={};
+PG.live=function(){var L=D.live;if(L===null)return'<div class="page"><div class="card"><p class="wmute">'+(D.liveErr?"Could not read sessions. Publish the new Firestore rules, then press Refresh data.":"Loading…")+'</p></div></div>';
+ var tp=tally(L,function(s){return secName((s.trail||[]).slice(-1)[0])})[0],tc=tally(L,function(s){return countryOf(s.loc)})[0];
+ return'<div class="page"><div class="kpis">'+kpiT("Online now",String(L.length),"active in the last 2 minutes")+kpiT("Viewing most",tp?tp[0]:"—",tp?tp[1]+" visitor"+(tp[1]===1?"":"s"):"nobody right now")+kpiT("Top country",tc?tc[0]:"—",tc?tc[1]+" visitor"+(tc[1]===1?"":"s"):"nobody right now")+kpiT("Updates","every 15s","while this page is open")+'</div><div class="card"><h3><span class="live">LIVE</span></h3>'+(L.length?L.map(function(s){return sessRow(s,true)}).join(""):'<p class="wmute">Nobody is on the site right now.</p>')+'</div></div>'};
+PG.activity=function(){var ev=[];
+ (D.live||[]).forEach(function(s){ev.push({t:s.last,a:"Online now · "+(secName((s.trail||[]).slice(-1)[0])),b:[ipv(s.ip),s.loc||"Unknown",brName(s.ua)].filter(Boolean).join(" · "),s:"ok"})});
+ D.sess.slice(0,15).forEach(function(s){ev.push({t:s.first,a:"Session · "+dur(s.dur)+" on site",b:[ipv(s.ip),countryOf(s.loc)||"Unknown",devName(s.ua)].filter(Boolean).join(" · "),s:"ok"})});
+ D.visits.slice(0,15).forEach(function(v){ev.push({t:v.time,a:"New visit · "+(v.path||"/"),b:[ipv(v.ip),countryOf(v.loc)||"Unknown",brName(v.ua)].filter(Boolean).join(" · "),s:"ok"})});
+ D.downloads.slice(0,10).forEach(function(v){ev.push({t:v.time,a:"Downloaded "+fileOf(v.file),b:[ipv(v.ip),countryOf(v.loc)].filter(Boolean).join(" · "),s:"ok"})});
+ D.clicks.slice(0,10).forEach(function(v){ev.push({t:v.time,a:"Clicked "+(v.target||"a link"),b:[devName(v.ua),brName(v.ua)].filter(Boolean).join(" · "),s:"ok"})});
+ D.errors.slice(0,10).forEach(function(v){ev.push({t:v.time,a:"Error · "+v.msg,b:[v.path,brName(v.ua)].filter(Boolean).join(" · "),s:"high"})});
+ ev.sort(function(a,b){return(tsMs(b.t)||Date.now())-(tsMs(a.t)||Date.now())});ev=ev.slice(0,30);
+ return'<div class="page">'+trackNote()+'<div class="card"><h3><span class="live">LIVE FEED</span></h3>'+(ev.length?'<div class="feed">'+ev.map(function(e){return evRow(e.a,e.b,ago(e.t),e.s)}).join("")+'</div>':'<p class="wmute">No activity yet</p>')+'</div></div>'};
+PG.sessions=function(){var c=sessR(),p=sessPrev(),ad=avg(nums(c,"dur")),pd=avg(nums(p,"dur")),as=avg(c.map(function(s){return(s.trail||[]).length})),ps=avg(p.map(function(s){return(s.trail||[]).length}));
+ var q=c.filter(function(s){return(s.dur||0)<10&&(s.trail||[]).length<=1}).length,pq=p.filter(function(s){return(s.dur||0)<10&&(s.trail||[]).length<=1}).length;
+ var more=D.sMore?'<div style="text-align:center;margin-top:14px"><button type="button" class="btnp" id="wmore">Load more ('+D.sess.length+' loaded)</button></div>':'<p class="wmute" style="text-align:center;margin-top:12px">All '+D.sess.length+' loaded</p>';
+ return'<div class="page">'+trackNote()+'<div class="kpis">'+kpi("Sessions",fmtN(c.length),p.length,c.length)+kpi("Avg. time on site",dur(ad||0),pd||0,ad||0)+kpi("Avg. sections viewed",(as||0).toFixed(1),ps||0,as||0)+kpi("Quick exits",fmtN(q),pq,q)+'</div><div class="card"><h3>Sessions</h3>'+(c.length?c.slice(0,300).map(function(s){return sessRow(s)}).join(""):'<p class="wmute">No sessions in this period</p>')+more+'</div></div>'};
+PG.journey=function(){var c=sessR(),ids=["home","about","work","check","milestones","contact"];
+ var first=tally(c.filter(function(s){return(s.trail||[]).length}),function(s){return secName(s.trail[0])}),last=tally(c.filter(function(s){return(s.trail||[]).length}),function(s){return secName(s.trail[s.trail.length-1])});
+ var reach=ids.map(function(id){return[secName(id),c.filter(function(s){return(s.trail||[]).indexOf(id)>-1}).length]});
+ return'<div class="page">'+trackNote()+'<div class="grid g3"><div class="card"><h3>Sections reached</h3>'+rows(reach,c.length,8)+'</div><div class="card"><h3>First section</h3>'+rows(first,c.length,6)+'</div><div class="card"><h3>Where visitors stop</h3>'+rows(last,c.length,6)+'</div></div><div class="card"><h3>Recent journeys</h3>'+(c.length?c.slice(0,40).map(function(s){var t=(s.trail||[]).map(secName);return'<div class="vrow"><div class="a"><b>'+E(ipv(s.ip))+'</b><small>'+E(when(s.first))+'</small></div><div class="b">'+E(s.loc||"Location unknown")+'<small>'+E([devName(s.ua),brName(s.ua)].filter(Boolean).join(" · "))+'</small></div><div class="c">'+E(t.join(" → ")||"no section viewed")+'<small>'+E(dur(s.dur))+' on site</small></div></div>'}).join(""):'<p class="wmute">No journeys in this period</p>')+'</div></div>'};
+PG.conv=function(){var sp=span(),c=sessR(),n=c.length,dl=inR(D.downloads,sp.a,sp.b).length,ck=inR(D.clicks,sp.a,sp.b).length,r=function(id){return c.filter(function(s){return(s.trail||[]).indexOf(id)>-1}).length};
+ function rate(x){return n?(x/n*100).toFixed(1)+"%":"—"}
+ return'<div class="page">'+trackNote()+'<div class="kpis">'+kpiT("Sessions",fmtN(n),"in this period")+kpiT("CV download rate",rate(dl),dl+" downloads")+kpiT("Reached Contact",rate(r("contact")),r("contact")+" sessions")+kpiT("Icon click rate",rate(ck),ck+" clicks")+'</div><div class="card"><h3>Funnel</h3>'+rows([["All sessions",n],["Viewed Work",r("work")],["Reached Contact",r("contact")],["Clicked an icon",ck],["Downloaded CV",dl]],n||1,6)+'<p class="wnote" style="margin-top:10px">Downloads and clicks are counted per period and not tied to one session, so the rates are approximate.</p></div></div>'};
+PG.refs=function(){var c=inR(D.visits,span().a,span().b),own=/mahfujur\.at$/;var h=tally(c.filter(function(v){var x=hostOf(v.ref);return x&&!own.test(x)}),function(v){return hostOf(v.ref)}),t=tally(c.filter(function(v){return v.ref&&v.ref.indexOf("http")!==0}),function(v){return srcOf(v.ref)});
+ return'<div class="page">'+noteHtml()+'<div class="grid g22"><div class="card"><h3>Websites that sent visitors</h3>'+rows(h,h.reduce(function(s,x){return s+x[1]},0),12)+'</div><div class="card"><h3>Tagged links (?src=…)</h3>'+rows(t,t.reduce(function(s,x){return s+x[1]},0),12)+'</div></div></div>'};
+PG.utm=function(){var c=sessR(),f=function(k){return tally(c.filter(function(s){return s[k]}),function(s){return s[k]})};var a=f("src"),b=f("med"),d=f("cmp");
+ return'<div class="page">'+trackNote()+(a.length||b.length||d.length?"":'<div class="card"><h3>How to use</h3><p class="wmute">Share links like <b>mahfujur.at/?utm_source=linkedin&amp;utm_medium=social&amp;utm_campaign=cv</b>. Visitors from them show up here.</p></div><div style="height:14px"></div>')+'<div class="grid g3"><div class="card"><h3>Source</h3>'+rows(a,c.length,8)+'</div><div class="card"><h3>Medium</h3>'+rows(b,c.length,8)+'</div><div class="card"><h3>Campaign</h3>'+rows(d,c.length,8)+'</div></div></div>'};
+PG.perf=function(){var c=sessR(),L=nums(c,"load"),T=nums(c,"ttfb"),F=nums(c,"fcp");
+ return'<div class="page">'+trackNote()+'<div class="kpis">'+kpiT("Median load time",ms(med(L)),L.length+" samples")+kpiT("75th percentile load",ms(p75(L)),"slowest quarter starts here")+kpiT("Median server response",ms(med(T)),"time to first byte")+kpiT("Median first paint",ms(med(F)),"first content on screen")+'</div><div class="grid g22"><div class="card"><h3>Load time by device</h3>'+medList(groupMed(c,function(s){return devCat(s.ua)},"load"))+'</div><div class="card"><h3>Load time by country</h3>'+medList(groupMed(c,function(s){return countryOf(s.loc)},"load"))+'</div></div><p class="wnote">Measured inside real visitors\' browsers. Last column = number of samples.</p></div>'};
+PG.vitals=function(){var c=sessR();
+ return'<div class="page">'+trackNote()+'<div class="kpis">'+vital("Largest Contentful Paint",nums(c,"lcp"),2500,4000,ms)+vital("First Contentful Paint",nums(c,"fcp"),1800,3000,ms)+vital("Layout shift (CLS)",nums(c,"cls"),.1,.25,function(v){return v.toFixed(3)})+vital("Time to first byte",nums(c,"ttfb"),800,1800,ms)+'</div><div class="card"><h3>What the colours mean</h3><p class="wmute">Green = good, yellow = needs work, red = poor (Google\'s Web Vitals limits). Values come from real visitors, so they vary with phone, network and country.</p></div></div>'};
+PG.errors=function(){var sp=span(),c=inR(D.errors,sp.a,sp.b),g=tally(c,function(e){return e.msg});var sids={};c.forEach(function(e){if(e.sid)sids[e.sid]=1});
+ return'<div class="page">'+(D.errErr?'<p class="wnote">Errors could not be loaded. Publish the new Firestore rules and press Refresh data.</p>':"")+'<div class="kpis">'+kpiT("Errors",fmtN(c.length),"in this period")+kpiT("Different errors",String(g.length),"unique messages")+kpiT("Affected sessions",String(Object.keys(sids).length),"visitors who hit an error")+kpiT("Last error",c.length?ago(c[0].time):"none","")+'</div><div class="grid g22"><div class="card"><h3>Most common</h3>'+rows(g,c.length,8)+'</div><div class="card"><h3>Latest</h3>'+(c.length?'<div class="feed">'+c.slice(0,15).map(function(e){return evRow(e.msg,[e.src?fileOf(e.src)+(e.line?":"+e.line:""):"",e.path,brName(e.ua)].filter(Boolean).join(" · "),ago(e.time),"high")}).join("")+'</div>':'<p class="wmute">No errors recorded. 🎉</p>')+'</div></div></div>'};
+function alertList(){var out=[],now=Date.now(),td=new Date();td.setHours(0,0,0,0);var t0=td.getTime();
+ var today=inR(D.visits,t0,now+1).length,prev=inR(D.visits,t0-7*864e5,t0).length/7;
+ if(today>=5&&today>=2*Math.max(prev,1))out.push(["high","Traffic spike","Today "+today+" visits vs about "+prev.toFixed(1)+" per day last week."]);
+ var e24=inR(D.errors,now-864e5,now+1).length;if(e24>=5)out.push(["high","Many errors","Errors in the last 24 hours: "+e24+"."]);else if(e24>0)out.push(["mid","Some errors","Errors in the last 24 hours: "+e24+"."]);
+ var byIp={};inR(D.visits,now-864e5,now+1).forEach(function(v){if(v.ip)byIp[v.ip]=(byIp[v.ip]||0)+1});Object.keys(byIp).forEach(function(ip){if(byIp[ip]>=10)out.push(["mid","Many visits from one IP",ipv(ip)+" made "+byIp[ip]+" visits in 24 hours."])});
+ var old={};D.visits.forEach(function(v){var m=tsMs(v.time);if(m!=null&&m<t0)old[countryOf(v.loc)]=1});var nw={};inR(D.visits,t0,now+1).forEach(function(v){var c=countryOf(v.loc);if(c&&!old[c])nw[c]=1});Object.keys(nw).forEach(function(c){if(Object.keys(old).length)out.push(["mid","New country",c+" visited for the first time in the loaded data."])});
+ var L=nums(sessR(),"load"),m=med(L);if(m!=null&&L.length>=5&&m>4000)out.push(["mid","Slow site","Median load time is "+ms(m)+"."]);
+ return out}
+PG.alerts=function(){var a=alertList();
+ return'<div class="page">'+noteHtml()+'<div class="card"><h3>Alerts right now</h3>'+(a.length?'<div class="feed">'+a.map(function(x){return evRow(x[1],x[2],"",x[0])}).join("")+'</div>':'<div class="feed">'+evRow("All quiet","No spikes, error bursts or unusual visitors found in the loaded data.","","ok")+'</div>')+'</div><p class="wnote">Alerts are calculated when you open this page. They do not send email or push messages.</p></div>'};
+PG.susp=function(){var sp=span(),c=inR(D.visits,sp.a,sp.b),by={};c.forEach(function(v){if(!v.ip)return;(by[v.ip]=by[v.ip]||[]).push(v)});var out=[];
+ Object.keys(by).forEach(function(ip){var l=by[ip],why=[];if(l.length>=8)why.push(l.length+" visits");var ts=l.map(function(v){return tsMs(v.time)}).filter(Boolean).sort(function(a,b){return a-b}),i,burst=false;for(i=2;i<ts.length;i++)if(ts[i]-ts[i-2]<60000)burst=true;if(burst)why.push("3+ visits within a minute");if(l.some(function(v){return BOT.test(v.ua||"")}))why.push("bot-like browser");if(why.length)out.push({ip:ip,loc:l[0].loc,ua:l[0].ua,n:l.length,why:why,t:l[0].time})});
+ out.sort(function(a,b){return b.why.length-a.why.length||b.n-a.n});
+ var quick=sessR().filter(function(s){return(s.dur||0)<3&&!(s.trail||[]).length}).length;
+ return'<div class="page">'+noteHtml()+'<div class="kpis">'+kpiT("Flagged IPs",String(out.length),"in this period")+kpiT("Bot-like browsers",String(c.filter(function(v){return BOT.test(v.ua||"")}).length),"visits")+kpiT("Empty sessions",String(quick),"left within 3s, saw nothing")+kpiT("Blocking","not possible","site is static")+'</div><div class="card"><h3>Flagged visitors</h3>'+(out.length?out.slice(0,50).map(function(o){return'<div class="vrow"><div class="a"><b>'+E(ipv(o.ip))+'</b><small>'+E(when(o.t))+'</small></div><div class="b">'+E(o.loc||"Location unknown")+'<small>'+E([devName(o.ua),brName(o.ua)].filter(Boolean).join(" · "))+'</small></div><div class="c">'+E(o.why.join(" · "))+'<small>'+o.n+' visits in period</small></div></div>'}).join(""):'<p class="wmute">Nothing suspicious found in the loaded data.</p>')+'</div><p class="wnote">These are simple rules, not proof. A flag only means "worth a look". A static site cannot block anyone.</p></div>'};
+PG.settings=function(){var b=function(v,l){return'<button data-act="range" data-v="'+v+'" class="'+(S.range===v?"on":"")+'">'+l+'</button>'};
+ return'<div class="page"><div class="grid g22"><div class="card"><h3>Default period</h3><div class="tabs">'+b(1,"Today")+b(7,"7 days")+b(30,"30 days")+b(90,"90 days")+'</div><p class="wnote">Used when you open the dashboard.</p></div><div class="card"><h3>Theme</h3><div class="tabs"><button data-act="theme" data-v="light" class="'+(theme==="light"?"on":"")+'">Light</button><button data-act="theme" data-v="dark" class="'+(theme==="dark"?"on":"")+'">Dark</button></div></div></div><div class="card"><h3>Data</h3><p class="wmute">Loaded: '+D.visits.length+' visits · '+D.downloads.length+' downloads · '+D.sess.length+' sessions · '+D.errors.length+' errors.</p><div style="margin-top:12px"><button type="button" class="btnp" data-act="refresh">Refresh data</button></div></div></div>'};
+PG.privacy=function(){return'<div class="page"><div class="grid g22"><div class="card"><h3>Hide IP addresses</h3><div class="tabs"><button data-act="mask" data-v="0" class="'+(MASK?"":"on")+'">Show full IP</button><button data-act="mask" data-v="1" class="'+(MASK?"on":"")+'">Hide last part</button></div><p class="wnote">Only changes what this screen shows (for screenshots). Stored data stays the same.</p></div><div class="card"><h3>Who can see the data</h3><p class="wmute">Only the account you sign in with. Firestore rules let anyone add a visit, but only your login can read.</p></div></div><div class="card"><h3>What the site records</h3><div class="feed">'+[["Each visit","IP, approximate location, browser, page, referrer, time"],["Each session","time on site, sections viewed, device width, language, campaign tags, load speed"],["Icon clicks and downloads","which icon or file, with browser info"],["Errors","error message, file, browser"],["Not recorded","name, email, cookies for tracking, exact location"]].map(function(x){return evRow(x[0],x[1],"","ok")}).join("")+'</div><p class="wnote">Stored in your Firebase project. To delete data, use the Firebase console.</p></div></div>'};
+function act(a,v){if(a==="range"){S.range=+v;try{localStorage.setItem("wi-range",String(S.range))}catch(e){}}
+ else if(a==="theme"){theme=v;root.setAttribute("data-theme",theme);try{localStorage.setItem("wi-theme",theme)}catch(e){}}
+ else if(a==="mask"){MASK=v==="1";try{localStorage.setItem("wi-mask",v)}catch(e){}}
+ else if(a==="refresh"){load();return}
+ render()}
+/* live polling: only while Live Visitors or Real-time Activity is open */
+var pollT=null;
+function pollLive(){if(document.hidden||!window.__fb||!window.__fb.liveSessions)return;window.__fb.liveSessions(120000).then(function(r){D.live=r;D.liveErr=false;if(S.page==="live"||S.page==="activity")render()}).catch(function(){D.liveErr=true;if(D.live===null&&(S.page==="live"||S.page==="activity"))render()})}
+function syncPoll(){var on=S.page==="live"||S.page==="activity";if(on&&!pollT){pollLive();pollT=setInterval(pollLive,15000)}else if(!on&&pollT){clearInterval(pollT);pollT=null}}
+
 function pageBody(){
  var p=S.page,v=D.visits,sp=span(),cur=inR(v,sp.a,sp.b);
+ if(PG[p])return PG[p]();
  if(p==="overview")return vOverview();
  if(p==="visitors")return listPage("visitors");
  if(p==="downloads")return'<div class="page"><div class="grid g22" style="margin-bottom:14px"><div class="card"><h3>Files</h3>'+rows(tally(D.downloads,function(x){return fileOf(x.file)}),D.downloads.length,8)+'</div><div class="card"><h3>By country</h3>'+rows(tally(D.downloads,function(x){return countryOf(x.loc)}),D.downloads.length,8)+'</div></div></div>'+listPage("downloads").replace('<div class="page">','<div class="page" style="margin-top:-14px">');
@@ -1982,7 +2104,7 @@ function pageBody(){
  if(p==="devices")return'<div class="page">'+noteHtml()+'<div class="grid g22"><div class="card"><h3>Device type</h3>'+donut(tally(cur,function(x){return devCat(x.ua)}),"TYPES")+'</div><div class="card"><h3>Device</h3>'+rows(tally(cur,function(x){return devName(x.ua)}),cur.length,8)+'</div></div></div>';
  if(p==="browsers")return'<div class="page">'+noteHtml()+'<div class="grid g22"><div class="card"><h3>Browsers</h3>'+donut(tally(cur,function(x){return brName(x.ua)}),"BROWSERS")+'</div><div class="card"><h3>Share</h3>'+rows(tally(cur,function(x){return brName(x.ua)}),cur.length,8)+'</div></div></div>';
  if(p==="os")return'<div class="page">'+noteHtml()+'<div class="grid g22"><div class="card"><h3>Operating systems</h3>'+donut(tally(cur,function(x){return osName(x.ua)}),"SYSTEMS")+'</div><div class="card"><h3>Share</h3>'+rows(tally(cur,function(x){return osName(x.ua)}),cur.length,8)+'</div></div></div>';
- if(p==="love")return'<div class="page"><div class="card"><h3>Love Game history</h3>'+(D.games.length?D.games.map(function(g){var ex=[];if(g.phone)ex.push("📱 "+g.phone);if(g.loc)ex.push("📍 "+g.loc);if(g.ip)ex.push("IP: "+g.ip);return'<div class="vrow"><div class="a"><b>'+E(g.from||"Someone")+" → "+E(g.to||"Someone")+'</b><small>'+E(g.answer?"Answered: "+g.answer:"No answer yet")+'</small></div><div class="b">'+E(ex.join(" · ")||"—")+'<small>'+E(when(g.createdAt||g.time))+'</small></div></div>'}).join(""):'<p class="wmute">No games yet</p>')+'</div></div>';
+ if(p==="love")return'<div class="page"><div class="card"><h3>Love Game history</h3>'+(D.games.length?D.games.map(function(g){var ex=[];if(g.phone)ex.push("📱 "+g.phone);if(g.loc)ex.push("📍 "+g.loc);if(g.ip)ex.push("IP: "+ipv(g.ip));return'<div class="vrow"><div class="a"><b>'+E(g.from||"Someone")+" → "+E(g.to||"Someone")+'</b><small>'+E(g.answer?"Answered: "+g.answer:"No answer yet")+'</small></div><div class="b">'+E(ex.join(" · ")||"—")+'<small>'+E(when(g.createdAt||g.time))+'</small></div></div>'}).join(""):'<p class="wmute">No games yet</p>')+'</div></div>';
  if(NEEDS_TRACK[p])return emptyCard("Needs new tracking","This page needs session tracking that the site does not collect yet. It comes in the next step.");
  return emptyCard("Planned","This page is part of the plan and is not built yet.")}
 
@@ -1994,7 +2116,8 @@ function runSearch(k){var q=(S.q||"").trim(),info=view.querySelector("#wqi"),res
   window.__fb.searchIp(k==="downloads"?"downloads":"visits",q).then(function(r){if((S.q||"").trim()!==q)return;S.qRes=r;S.qInfo="Found: "+r.length+" (by IP, all data)";paintRes(k)}).catch(function(){S.qInfo="Search failed — check Firestore rules";if(info)info.textContent=S.qInfo});return}
  S.qIsIp=false;var src=k==="downloads"?D.downloads:D.visits,ql=q.toLowerCase();S.qRes=src.filter(function(x){return JSON.stringify(x).toLowerCase().indexOf(ql)>-1});S.qInfo="Found: "+S.qRes.length+" (in loaded data)";paintRes(k)}
 function paintRes(k){var info=view.querySelector("#wqi"),res=view.querySelector("#wres"),fn=k==="visitors"?visitRow:dlRow;if(info)info.textContent=S.qInfo;if(res)res.innerHTML=S.qRes&&S.qRes.length?S.qRes.slice(0,500).map(fn).join(""):'<p class="wmute">Nothing found</p>'}
-function loadMore(k){var b=view.querySelector("#wmore");if(b){b.disabled=true;b.textContent="Loading…"}var isV=k==="visitors";
+function loadMore(k){if(k==="sessions"){var sb=view.querySelector("#wmore");if(sb){sb.disabled=true;sb.textContent="Loading…"}window.__fb.pageSess(D.sCur).then(function(r){D.sess=D.sess.concat(r.items.map(addT));D.sCur=r.cursor;D.sMore=r.more;render()}).catch(function(){if(sb){sb.disabled=false;sb.textContent="Failed — try again"}});return}
+var b=view.querySelector("#wmore");if(b){b.disabled=true;b.textContent="Loading…"}var isV=k==="visitors";
  function fail(){var c=view.querySelector("#wmore");if(c){c.disabled=false;c.textContent="Could not load, try again"}}
  if(isV&&!D.vMore){window.__fb.pageNoTime(D.vLegacyCur).then(function(r){D.visits=D.visits.concat(r.items);D.vLegacyCur=r.cursor;D.vLegacyDone=!r.more;render()}).catch(fail);return}
  window.__fb.pageOf(isV?"visits":"downloads",isV?D.vCur:D.dCur).then(function(r){if(isV){D.visits=D.visits.concat(r.items);D.vCur=r.cursor;D.vMore=r.more}else{D.downloads=D.downloads.concat(r.items);D.dCur=r.cursor;D.dMore=r.more}render()}).catch(fail)}
@@ -2008,12 +2131,13 @@ function buildSide(){var h='<div class="brand"><i><img src="'+E((document.queryS
  sideEl.querySelector("#wsync").onclick=function(){load()};sideEl.querySelector("#wout").onclick=function(){window.__fb.logout()}}
 function render(){if(!view)return;var t=TITLES[S.page]||[(NAV.reduce(function(a,g){return a.concat(g[1])},[]).filter(function(i){return i[0]===S.page})[0]||[0,"Page"])[1],"Planned for a later step"];
  var m=root.querySelector("#wttl");m.textContent=t[0];root.querySelector("#wsub").textContent=D.warn||t[1];
- root.querySelector("#wrange").style.display=(S.page==="overview"||S.page==="sources"||S.page==="geo"||S.page==="pages"||S.page==="devices"||S.page==="browsers"||S.page==="os")?"":"none";
+ root.querySelector("#wrange").style.display=({overview:1,sources:1,geo:1,pages:1,devices:1,browsers:1,os:1,sessions:1,journey:1,conv:1,refs:1,utm:1,perf:1,vitals:1,errors:1,susp:1})[S.page]?"":"none";
  root.querySelectorAll("#wrange button").forEach(function(b){b.classList.toggle("on",+b.getAttribute("data-r")===S.range)});
  root.querySelector(".side").classList.toggle("open",S.menu);root.querySelector(".scrim").classList.toggle("show",S.menu);
  buildSide();view.innerHTML=pageBody();
  view.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){S.metric=b.getAttribute("data-m");render()}});
  var q=view.querySelector("#wq");if(q){var tm;q.oninput=function(){S.q=q.value;clearTimeout(tm);tm=setTimeout(function(){runSearch(S.page)},250)}}
+ view.querySelectorAll("[data-act]").forEach(function(b){b.onclick=function(){act(b.getAttribute("data-act"),b.getAttribute("data-v"))}});syncPoll();
  var mb=view.querySelector("#wmore");if(mb)mb.onclick=function(){loadMore(S.page)};
  if(S.page==="overview"&&loaded)bindChart(series(),S.metric)}
 function buildApp(){
@@ -2035,12 +2159,12 @@ function buildLogin(){
 
 /* ---------- data ---------- */
 function load(){D.loading=true;D.warn="Loading…";if(view)render();
- Promise.all([window.__fb.getStats().catch(function(){return{views:0}}),window.__fb.pageOf("visits",null).catch(function(){return null}),window.__fb.pageOf("downloads",null).catch(function(){return null}),window.__fb.listAll().catch(function(){return null}),window.__fb.countOf("visits").catch(function(){return null}),window.__fb.countOf("downloads").catch(function(){return null}),(window.__fb.listClicks?window.__fb.listClicks():Promise.resolve([])).catch(function(){return[]})]).then(function(r){
+ Promise.all([window.__fb.getStats().catch(function(){return{views:0}}),window.__fb.pageOf("visits",null).catch(function(){return null}),window.__fb.pageOf("downloads",null).catch(function(){return null}),window.__fb.listAll().catch(function(){return null}),window.__fb.countOf("visits").catch(function(){return null}),window.__fb.countOf("downloads").catch(function(){return null}),(window.__fb.listClicks?window.__fb.listClicks():Promise.resolve([])).catch(function(){return[]}),(window.__fb.pageSess?window.__fb.pageSess(null).catch(function(){return null}):Promise.resolve(null)),(window.__fb.listErrors?window.__fb.listErrors().catch(function(){return null}):Promise.resolve(null))]).then(function(r){
   D.views=r[0]&&r[0].views||0;var pv=r[1],pd=r[2];
   D.visits=pv?pv.items:[];D.vCur=pv?pv.cursor:null;D.vMore=pv?pv.more:false;D.vLegacyCur=null;D.vLegacyDone=false;
   D.downloads=pd?pd.items:[];D.dCur=pd?pd.cursor:null;D.dMore=pd?pd.more:false;
-  D.games=r[3]||[];D.vTotal=r[4];D.dTotal=r[5];D.clicks=r[6]||[];
-  var bad=[];if(!pv)bad.push("visits");if(!pd)bad.push("downloads");if(!r[3])bad.push("love games");
+  D.sess=r[7]?r[7].items.map(addT):[];D.sCur=r[7]?r[7].cursor:null;D.sMore=r[7]?r[7].more:false;D.sessErr=!r[7];D.errors=r[8]||[];D.errErr=!r[8];D.games=r[3]||[];D.vTotal=r[4];D.dTotal=r[5];D.clicks=r[6]||[];
+  var bad=[];if(!pv)bad.push("visits");if(!pd)bad.push("downloads");if(!r[3])bad.push("love games");if(!r[7])bad.push("sessions");if(!r[8])bad.push("errors");
   D.warn=bad.length?"Could not load "+bad.join(", ")+" (check Firestore rules)":"";D.loading=false;loaded=true;render()})}
 
 ready(function(){window.__fb.onAuth(function(u){if(u){buildApp();load()}else{loaded=false;view=null;buildLogin()}})});
@@ -2065,7 +2189,7 @@ document.addEventListener("click",function(e){var a=e.target&&e.target.closest?e
 </script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, addDoc, setDoc, updateDoc, getDoc, collection, query, orderBy, limit, getDocs, serverTimestamp, increment, startAfter, getCountFromServer, where, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, addDoc, setDoc, updateDoc, getDoc, collection, query, orderBy, limit, getDocs, serverTimestamp, increment, startAfter, getCountFromServer, where, documentId, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 var firebaseConfig={apiKey:"AIzaSyCZrNOohHeXtXBkHoqfDqxBrRwqlB8YcQg",authDomain:"mahfujur-at.firebaseapp.com",projectId:"mahfujur-at",storageBucket:"mahfujur-at.firebasestorage.app",messagingSenderId:"259793717492",appId:"1:259793717492:web:0093c600230107fdcbf6a1"};
 var fbApp=initializeApp(firebaseConfig),db=getFirestore(fbApp),auth=getAuth(fbApp);
@@ -2087,6 +2211,12 @@ window.__fb={
  listClicks:function(){var qy=query(collection(db,"clicks"),orderBy("time","desc"),limit(500));return getDocs(qy).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});return out})},
  logDownload:function(file,ip,loc,ua){return addDoc(collection(db,"downloads"),{file:file||"",ip:ip||"",loc:loc||"",ua:ua||"",time:serverTimestamp()}).catch(function(){})},
  pageNoTime:function(cur){var qy=query(collection(db,"visits"),orderBy(documentId()),...(cur?[startAfter(cur)]:[]),limit(300));return getDocs(qy).then(function(snap){var items=[];snap.forEach(function(d){var x=d.data();if(!x.time)items.push(Object.assign({id:d.id},x))});var last=snap.docs.length?snap.docs[snap.docs.length-1]:cur;return{items:items,cursor:last,more:snap.size===300}})},searchIp:function(name,ip){return getDocs(query(collection(db,name),where("ip","==",ip),limit(500))).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});out.sort(function(a,b){return((b.time&&b.time.seconds)||0)-((a.time&&a.time.seconds)||0)});return out})},pageOf:function(name,cur){var qy=query(collection(db,name),orderBy("time","desc"),...(cur?[startAfter(cur)]:[]),limit(200));return getDocs(qy).then(function(snap){var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()))});var last=snap.docs.length?snap.docs[snap.docs.length-1]:cur;return{items:items,cursor:last,more:snap.size===200}})},countOf:function(name){return getCountFromServer(collection(db,name)).then(function(s){return s.data().count})},listDownloads:function(n){var qy=query(collection(db,"downloads"),orderBy("time","desc"),limit(n||200));return getDocs(qy).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});return out})},
+ sessStart:function(id,d){return setDoc(doc(db,"sessions",id),Object.assign({},d,{first:serverTimestamp(),last:serverTimestamp()})).catch(function(){})},
+ sessPing:function(id,d){return updateDoc(doc(db,"sessions",id),Object.assign({},d,{last:serverTimestamp()})).catch(function(){})},
+ logError:function(d){return addDoc(collection(db,"errors"),Object.assign({},d,{time:serverTimestamp()})).catch(function(){})},
+ liveSessions:function(ms){return getDocs(query(collection(db,"sessions"),where("last",">",Timestamp.fromMillis(Date.now()-ms)),orderBy("last","desc"),limit(100))).then(function(snap){var o=[];snap.forEach(function(d){o.push(Object.assign({id:d.id},d.data()))});return o})},
+ pageSess:function(cur){return getDocs(query(collection(db,"sessions"),orderBy("last","desc"),...(cur?[startAfter(cur)]:[]),limit(100))).then(function(snap){var items=[];snap.forEach(function(d){items.push(Object.assign({id:d.id},d.data()))});return{items:items,cursor:snap.docs.length?snap.docs[snap.docs.length-1]:cur,more:snap.size===100}})},
+ listErrors:function(){return getDocs(query(collection(db,"errors"),orderBy("time","desc"),limit(200))).then(function(snap){var o=[];snap.forEach(function(d){o.push(Object.assign({id:d.id},d.data()))});return o})},
  listVisits:function(n){var qy=query(collection(db,"visits"),orderBy("time","desc"),limit(n||200));return getDocs(qy).then(function(snap){var out=[];snap.forEach(function(d){out.push(Object.assign({id:d.id},d.data()))});return out})}
 };
 window.dispatchEvent(new Event("fbready"));
