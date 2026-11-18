@@ -1,0 +1,18 @@
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+.env.local
+*.pem
+*.key
+serviceAccount*.json
+*-service-account*.json
+firebase-adminsdk*.json
+secrets/
+
+# Build output and tools
+dist/
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
